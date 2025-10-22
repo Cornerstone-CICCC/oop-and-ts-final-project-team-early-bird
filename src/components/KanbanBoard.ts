@@ -1,5 +1,5 @@
-import { TaskList } from "./TaskList";
-import { Task } from "../models/Task";
+import { TaskList } from "./TaskList.js";
+import { Task } from "../models/Task.js";
 
 export class KanbanBoard {
     todoList = new TaskList("todo")

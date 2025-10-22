@@ -1,9 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const KanbanBoard_1 = require("./components/KanbanBoard");
+import { KanbanBoard } from "./components/KanbanBoard.js";
 const appRoot = document.getElementById("app");
 if (appRoot) {
-    new KanbanBoard_1.KanbanBoard(appRoot);
+    new KanbanBoard(appRoot);
 }
 else {
     console.error("Root element not found!");

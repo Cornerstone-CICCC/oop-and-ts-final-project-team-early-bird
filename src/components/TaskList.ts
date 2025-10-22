@@ -1,5 +1,5 @@
-import { Task } from "../models/Task";
-import { TaskCard } from "./TaskCard";
+import { Task } from "../models/Task.js";
+import { TaskCard } from "./TaskCard.js";
 
 export class TaskList {
     tasks: Task[] = []
@@ -25,6 +25,8 @@ export class TaskList {
     render(): HTMLElement {
         const column = document.createElement("div")
         column.classList.add("kanban-column")
+        const titleAdd = document.createElement('div')
+        titleAdd.classList.add('title-add')
 
         const statusTitle = document.createElement("h2")
         statusTitle.textContent = this.status === "todo"
@@ -32,6 +34,9 @@ export class TaskList {
             : this.status === "in-progress"
                 ? "In Progress"
                 : "Done"
+        const addBtn = document.createElement('button')
+        addBtn.classList.add('add-task-btn')
+        addBtn.innerHTML = `<i class="fa-solid fa-plus"></i>`
         const taskContainer = document.createElement('div')
         taskContainer.classList.add('task-container')
 
@@ -40,7 +45,22 @@ export class TaskList {
             taskContainer.appendChild(card.render())
         })
 
-        column.append(statusTitle, taskContainer)
+        addBtn.addEventListener('click', () => {
+            const newTask: Task = {
+                id: Math.floor(Math.random() * 10000),
+                title: "New Task",
+                description: "Add Description",
+                status: this.status
+            }
+
+            this.add(newTask)
+            const card = new TaskCard(newTask)
+            taskContainer.appendChild(card.render())
+        })
+
+        titleAdd.appendChild(statusTitle)
+        titleAdd.appendChild(addBtn)
+        column.append(titleAdd, taskContainer)
         return column
     }
 }

@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.TaskList = void 0;
-const TaskCard_1 = require("./TaskCard");
-class TaskList {
+import { TaskCard } from "./TaskCard.js";
+export class TaskList {
     constructor(status) {
         this.tasks = [];
         this.status = status;
@@ -21,21 +18,38 @@ class TaskList {
     render() {
         const column = document.createElement("div");
         column.classList.add("kanban-column");
+        const titleAdd = document.createElement('div');
+        titleAdd.classList.add('title-add');
         const statusTitle = document.createElement("h2");
         statusTitle.textContent = this.status === "todo"
             ? "To Do"
             : this.status === "in-progress"
                 ? "In Progress"
                 : "Done";
+        const addBtn = document.createElement('button');
+        addBtn.classList.add('add-task-btn');
+        addBtn.innerHTML = `<i class="fa-solid fa-plus"></i>`;
         const taskContainer = document.createElement('div');
         taskContainer.classList.add('task-container');
         this.tasks.forEach(task => {
-            const card = new TaskCard_1.TaskCard(task);
+            const card = new TaskCard(task);
             taskContainer.appendChild(card.render());
         });
-        column.append(statusTitle, taskContainer);
+        addBtn.addEventListener('click', () => {
+            const newTask = {
+                id: Math.floor(Math.random() * 10000),
+                title: "New Task",
+                description: "Add Description",
+                status: this.status
+            };
+            this.add(newTask);
+            const card = new TaskCard(newTask);
+            taskContainer.appendChild(card.render());
+        });
+        titleAdd.appendChild(statusTitle);
+        titleAdd.appendChild(addBtn);
+        column.append(titleAdd, taskContainer);
         return column;
     }
 }
-exports.TaskList = TaskList;
 //# sourceMappingURL=TaskList.js.map

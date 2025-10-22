@@ -1,12 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.KanbanBoard = void 0;
-const TaskList_1 = require("./TaskList");
-class KanbanBoard {
+import { TaskList } from "./TaskList.js";
+export class KanbanBoard {
     constructor(root) {
-        this.todoList = new TaskList_1.TaskList("todo");
-        this.inProgressList = new TaskList_1.TaskList("in-progress");
-        this.doneList = new TaskList_1.TaskList("done");
+        this.todoList = new TaskList("todo");
+        this.inProgressList = new TaskList("in-progress");
+        this.doneList = new TaskList("done");
         this.root = root;
         this.loadDummyData();
         this.renderBoard();
@@ -33,5 +30,4 @@ class KanbanBoard {
         this.root.appendChild(board);
     }
 }
-exports.KanbanBoard = KanbanBoard;
 //# sourceMappingURL=KanbanBoard.js.map

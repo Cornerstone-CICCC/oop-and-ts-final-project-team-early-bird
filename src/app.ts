@@ -1,4 +1,4 @@
-import { KanbanBoard } from "./components/KanbanBoard";
+import { KanbanBoard } from "./components/KanbanBoard.js";
 
 const appRoot = document.getElementById("app") as HTMLElement
 
