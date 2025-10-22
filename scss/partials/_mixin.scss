@@ -1,9 +1,10 @@
 @use "sass:meta";
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 // color
-$text-color: #030213; 
+$text-color: #030213;
 $gray-01: #717182;
 $gray-02: #F3F3F5;
 $gray-03: #E5E5E5;
@@ -32,19 +33,26 @@ $pc: 769px;
 $tab: 600px;
 
 @mixin mq($breakpoint: sp) {
-  @if meta.type-of($breakpoint) == string {
-    @if $breakpoint == sp {
+  @if meta.type-of($breakpoint)==string {
+    @if $breakpoint ==sp {
       $breakpoint: $sp;
+
       @media (max-width: $breakpoint) {
         @content;
       }
-    } @else if $breakpoint == pc {
+    }
+
+    @else if $breakpoint ==pc {
       $breakpoint: $pc;
+
       @media (min-width: $breakpoint) {
         @content;
       }
-    } @else if $breakpoint == tab {
+    }
+
+    @else if $breakpoint ==tab {
       $breakpoint: $tab;
+
       @media (max-width: $breakpoint) {
         @content;
       }
@@ -54,12 +62,14 @@ $tab: 600px;
 
 // font
 $font-roboto: "Roboto", sans-serif;
+$font-montserret: "Montserrat", sans-serif;
 
-html{
+html {
   font-size: 10px;
   scroll-behavior: smooth;
 }
-body{
+
+body {
   font-family: $font-roboto;
   font-size: 1.6rem;
   font-weight: 400;

@@ -1,0 +1,13 @@
+@use './mixin';
+
+@media screen and (min-width: 769px) {
+    .kanban-board {
+        flex-direction: row;
+
+        .kanban-column {
+            min-width: 270px;
+            max-width: 300px;
+            width: 100%;
+        }
+    }
+}
