@@ -1,11 +1,11 @@
-import { Task } from "../models/Task.js";
+import { Status, Task } from "../models/Task.js";
 import { TaskCard } from "./TaskCard.js";
 
 export class TaskList {
     tasks: Task[] = []
-    status: "todo" | "in-progress" | "done"
+    status: Status
 
-    constructor(status: "todo" | "in-progress" | "done") {
+    constructor(status: Status) {
         this.status = status
     }
 
@@ -29,11 +29,7 @@ export class TaskList {
         titleAdd.classList.add('title-add')
 
         const statusTitle = document.createElement("h2")
-        statusTitle.textContent = this.status === "todo"
-            ? "To Do"
-            : this.status === "in-progress"
-                ? "In Progress"
-                : "Done"
+        statusTitle.textContent = this.status
         const addBtn = document.createElement('button')
         addBtn.classList.add('add-task-btn')
         addBtn.innerHTML = `<i class="fa-solid fa-plus"></i>`
