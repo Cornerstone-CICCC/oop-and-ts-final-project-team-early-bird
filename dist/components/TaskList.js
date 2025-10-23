@@ -1,3 +1,4 @@
+import { Status } from "../models/Task.js";
 import { TaskCard } from "./TaskCard.js";
 export class TaskList {
     constructor(status) {
@@ -31,9 +32,21 @@ export class TaskList {
             e.preventDefault();
         });
         taskContainer.addEventListener('drop', e => {
+            var _a;
             e.preventDefault();
             const dragging = document.querySelector('.dragging');
             taskContainer.appendChild(dragging);
+            const parentStatus = (_a = dragging.closest('.kanban-column')) === null || _a === void 0 ? void 0 : _a.querySelector('h2');
+            const draggingStatus = dragging.querySelector('.task-status');
+            if (parentStatus.textContent === Status.todo) {
+                draggingStatus.textContent = Status.todo;
+            }
+            else if (parentStatus.textContent === Status.inProgress) {
+                draggingStatus.textContent = Status.inProgress;
+            }
+            else if (parentStatus.textContent === Status.done) {
+                draggingStatus.textContent = Status.done;
+            }
         });
         this.tasks.forEach(task => {
             const card = new TaskCard(task);
