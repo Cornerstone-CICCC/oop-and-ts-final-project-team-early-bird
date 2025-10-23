@@ -44,6 +44,16 @@ export class TaskList {
             e.preventDefault()
             const dragging : HTMLElement = document.querySelector('.dragging') as HTMLElement
             taskContainer.appendChild(dragging)
+
+            const parentStatus : HTMLElement = dragging.closest('.kanban-column')?.querySelector('h2') as HTMLElement
+            const draggingStatus : HTMLElement = dragging.querySelector('.task-status') as HTMLElement
+            if(parentStatus.textContent === Status.todo){
+                draggingStatus.textContent = Status.todo
+            } else if(parentStatus.textContent === Status.inProgress){
+                draggingStatus.textContent = Status.inProgress
+            } else if(parentStatus.textContent === Status.done){
+                draggingStatus.textContent = Status.done
+            }
         })
 
         this.tasks.forEach(task => {
