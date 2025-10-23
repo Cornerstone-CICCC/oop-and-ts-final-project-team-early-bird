@@ -21,11 +21,7 @@ export class TaskList {
         const titleAdd = document.createElement('div');
         titleAdd.classList.add('title-add');
         const statusTitle = document.createElement("h2");
-        statusTitle.textContent = this.status === "todo"
-            ? "To Do"
-            : this.status === "in-progress"
-                ? "In Progress"
-                : "Done";
+        statusTitle.textContent = this.status;
         const addBtn = document.createElement('button');
         addBtn.classList.add('add-task-btn');
         addBtn.innerHTML = `<i class="fa-solid fa-plus"></i>`;

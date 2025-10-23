@@ -1,10 +1,10 @@
 import { TaskList } from "./TaskList.js";
-import { Task } from "../models/Task.js";
+import { Task, Status } from "../models/Task.js";
 
 export class KanbanBoard {
-    todoList = new TaskList("todo")
-    inProgressList = new TaskList("in-progress")
-    doneList = new TaskList("done")
+    todoList = new TaskList(Status.todo)
+    inProgressList = new TaskList(Status.inProgress)
+    doneList = new TaskList(Status.done)
     root: HTMLElement
 
     constructor(root: HTMLElement) {
@@ -15,15 +15,15 @@ export class KanbanBoard {
 
     loadDummyData() {
         const dummyTasks: Task[] = [
-            { id: 1, title: "Setup project", description: "Initialize TypeScript project", status: "todo" },
-            { id: 2, title: "Design UI", description: "Sketch Kanban layout", status: "in-progress" },
-            { id: 3, title: "Build TaskCard", description: "Implement draggable task card", status: "done" }
+            { id: 1, title: "Setup project", description: "Initialize TypeScript project", status: Status.todo },
+            { id: 2, title: "Design UI", description: "Sketch Kanban layout", status: Status.inProgress },
+            { id: 3, title: "Build TaskCard", description: "Implement draggable task card", status: Status.done }
         ]
 
         dummyTasks.forEach(task => {
-            if (task.status === "todo") this.todoList.add(task)
-            if (task.status === "in-progress") this.inProgressList.add(task)
-            if (task.status === "done") this.doneList.add(task)
+            if (task.status === Status.todo) this.todoList.add(task)
+            if (task.status === Status.inProgress) this.inProgressList.add(task)
+            if (task.status === Status.done) this.doneList.add(task)
         })
     }
 
