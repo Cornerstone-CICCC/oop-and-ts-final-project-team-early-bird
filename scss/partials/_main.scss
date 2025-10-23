@@ -41,6 +41,7 @@
             display: flex;
             flex-direction: column;
             gap: 2rem;
+            height: 100%;
 
             .task {
                 display: flex;
@@ -51,6 +52,7 @@
                 border: 1px solid mixin.$gray-03;
                 background-color: mixin.$white;
                 position: relative;
+                cursor: move;
 
                 .btn-modal {
                     display: none;
