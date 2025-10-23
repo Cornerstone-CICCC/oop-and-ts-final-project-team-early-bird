@@ -59,9 +59,12 @@
                     flex-direction: column;
                     position: absolute;
                     top: 5rem;
-                    right: 1rem;
+                    right: 1.6rem;
                     background-color: mixin.$gray-02;
-                    border-radius: 5px;
+                    border-radius: 8px;
+                    padding: .8rem;
+                    min-width: 100px;
+                    border: 1px solid mixin.$gray-03;
 
                     &.show {
                         display: flex;
@@ -69,6 +72,7 @@
 
                     .edit-btn {
                         display: flex;
+                        align-items: center;
                         gap: 1rem;
                         padding: .5rem;
                         border: none;
@@ -83,6 +87,7 @@
 
                     .delete-btn {
                         display: flex;
+                        align-items: center;
                         gap: 1rem;
                         padding: .5rem;
                         border: none;
