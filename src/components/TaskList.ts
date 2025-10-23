@@ -40,6 +40,16 @@ export class TaskList {
         const taskContainer = document.createElement('div')
         taskContainer.classList.add('task-container')
 
+        taskContainer.addEventListener('dragover', e => {
+            e.preventDefault()
+        })
+
+        taskContainer.addEventListener('drop', e => {
+            e.preventDefault()
+            const dragging : HTMLElement = document.querySelector('.dragging') as HTMLElement
+            taskContainer.appendChild(dragging)
+        })
+
         this.tasks.forEach(task => {
             const card = new TaskCard(task)
             taskContainer.appendChild(card.render())

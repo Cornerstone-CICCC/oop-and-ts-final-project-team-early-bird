@@ -6,6 +6,7 @@ export class TaskCard {
     createElement() {
         const el = document.createElement('div');
         el.className = "task";
+        el.setAttribute('draggable', 'true');
         el.innerHTML = `
             <div class="card-header">
                 <div class="id-status">
@@ -19,6 +20,14 @@ export class TaskCard {
                 <p class="task-desc">${this.task.description}</p>
             </div>
         `;
+        el.addEventListener('dragstart', e => {
+            const data = e.target;
+            data.classList.add('dragging');
+        });
+        el.addEventListener('dragend', e => {
+            const data = e.target;
+            data.classList.remove('dragging');
+        });
         const modal = document.createElement('div');
         modal.classList.add('btn-modal');
         modal.innerHTML = `

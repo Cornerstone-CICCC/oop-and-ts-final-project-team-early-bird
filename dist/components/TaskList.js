@@ -31,6 +31,14 @@ export class TaskList {
         addBtn.innerHTML = `<i class="fa-solid fa-plus"></i>`;
         const taskContainer = document.createElement('div');
         taskContainer.classList.add('task-container');
+        taskContainer.addEventListener('dragover', e => {
+            e.preventDefault();
+        });
+        taskContainer.addEventListener('drop', e => {
+            e.preventDefault();
+            const dragging = document.querySelector('.dragging');
+            taskContainer.appendChild(dragging);
+        });
         this.tasks.forEach(task => {
             const card = new TaskCard(task);
             taskContainer.appendChild(card.render());
