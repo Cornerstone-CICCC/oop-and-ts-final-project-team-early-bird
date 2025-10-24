@@ -4,22 +4,54 @@ import { TaskCard } from "./TaskCard.js";
 export class TaskList {
     tasks: Task[] = []
     status: Status
+    element: HTMLElement
 
-    constructor(status: Status) {
+    constructor(status: Status, selector: string) {
         this.status = status
+        this.element = document.querySelector(selector)!
+        this.loadTasks()
+        this.render()
+    }
+
+    private get storageKey() {
+        return `task_${this.status}`
+    }
+
+    private saveTasks() {
+        localStorage.setItem(this.storageKey, JSON.stringify(this.tasks))
+    }
+
+    private loadTasks() {
+        const data = localStorage.getItem(this.storageKey)
+        this.tasks = data ? JSON.parse(data) : []
     }
 
     add(newTask: Task) {
-        this.tasks.push(newTask)
+        if (!this.tasks.some(task => task.id === newTask.id)) {
+            this.tasks.push(newTask)
+            this.saveTasks()
+        }
+        this.refresh()
     }
 
     update(id: number, updatedTask: Partial<Task>) {
-        const task = this.tasks.find(task => task.id === id)
-        if (task) Object.assign(task, updatedTask)
+        let task = this.tasks.find(task => task.id === id)
+        if (task)
+            Object.assign(task, updatedTask)
+        this.saveTasks()
+        this.refresh()
     }
 
     delete(id: number) {
         this.tasks = this.tasks.filter(task => task.id !== id)
+        this.saveTasks()
+        this.refresh()
+    }
+
+    private refresh() {
+        if (this.element != null)
+            this.element.innerHTML = ''
+        this.render()
     }
 
     render(): HTMLElement {
@@ -42,12 +74,22 @@ export class TaskList {
 
         taskContainer.addEventListener('drop', e => {
             e.preventDefault()
-            const dragging : HTMLElement = document.querySelector('.dragging') as HTMLElement
+            const dragging: HTMLElement = document.querySelector('.dragging') as HTMLElement
             taskContainer.appendChild(dragging)
+
+            const parentStatus : HTMLElement = dragging.closest('.kanban-column')?.querySelector('h2') as HTMLElement
+            const draggingStatus : HTMLElement = dragging.querySelector('.task-status') as HTMLElement
+            if(parentStatus.textContent === Status.todo){
+                draggingStatus.textContent = Status.todo
+            } else if(parentStatus.textContent === Status.inProgress){
+                draggingStatus.textContent = Status.inProgress
+            } else if(parentStatus.textContent === Status.done){
+                draggingStatus.textContent = Status.done
+            }
         })
 
         this.tasks.forEach(task => {
-            const card = new TaskCard(task)
+            const card = new TaskCard(task, this)
             taskContainer.appendChild(card.render())
         })
 
@@ -60,7 +102,7 @@ export class TaskList {
             }
 
             this.add(newTask)
-            const card = new TaskCard(newTask)
+            const card = new TaskCard(newTask, this)
             taskContainer.appendChild(card.render())
         })
 
