@@ -1,19 +1,45 @@
 import { TaskCard } from "./TaskCard.js";
 export class TaskList {
-    constructor(status) {
+    constructor(status, selector) {
         this.tasks = [];
         this.status = status;
+        this.element = document.querySelector(selector);
+        this.loadTasks();
+        this.render();
+    }
+    get storageKey() {
+        return `task_${this.status}`;
+    }
+    saveTasks() {
+        localStorage.setItem(this.storageKey, JSON.stringify(this.tasks));
+    }
+    loadTasks() {
+        const data = localStorage.getItem(this.storageKey);
+        this.tasks = data ? JSON.parse(data) : [];
     }
     add(newTask) {
-        this.tasks.push(newTask);
+        if (!this.tasks.some(task => task.id === newTask.id)) {
+            this.tasks.push(newTask);
+            this.saveTasks();
+        }
+        this.refresh();
     }
     update(id, updatedTask) {
-        const task = this.tasks.find(task => task.id === id);
+        let task = this.tasks.find(task => task.id === id);
         if (task)
             Object.assign(task, updatedTask);
+        this.saveTasks();
+        this.refresh();
     }
     delete(id) {
         this.tasks = this.tasks.filter(task => task.id !== id);
+        this.saveTasks();
+        this.refresh();
+    }
+    refresh() {
+        if (this.element != null)
+            this.element.innerHTML = '';
+        this.render();
     }
     render() {
         const column = document.createElement("div");
@@ -36,7 +62,7 @@ export class TaskList {
             taskContainer.appendChild(dragging);
         });
         this.tasks.forEach(task => {
-            const card = new TaskCard(task);
+            const card = new TaskCard(task, this);
             taskContainer.appendChild(card.render());
         });
         addBtn.addEventListener('click', () => {
@@ -47,7 +73,7 @@ export class TaskList {
                 status: this.status
             };
             this.add(newTask);
-            const card = new TaskCard(newTask);
+            const card = new TaskCard(newTask, this);
             taskContainer.appendChild(card.render());
         });
         titleAdd.appendChild(statusTitle);
