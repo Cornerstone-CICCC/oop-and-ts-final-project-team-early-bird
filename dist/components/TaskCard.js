@@ -1,6 +1,9 @@
 export class TaskCard {
-    constructor(task) {
+    constructor(task, tasklist, onUpdate, onDelete) {
         this.task = task;
+        this.tasklist = tasklist;
+        this.onUpdate = onUpdate;
+        this.onDelete = onDelete;
         this.element = this.createElement();
     }
     createElement() {
@@ -48,14 +51,19 @@ export class TaskCard {
         });
         const editBtn = modal.querySelector('.edit-btn');
         editBtn.addEventListener('click', () => {
+            var _a;
             const titleEl = el.querySelector('.task-title');
             const descEl = el.querySelector('.task-desc');
             modal.classList.remove('show');
             this.makeEditable(titleEl, descEl);
+            (_a = this.onUpdate) === null || _a === void 0 ? void 0 : _a.call(this, this.task);
         });
         const deleteBtn = modal.querySelector('.delete-btn');
         deleteBtn.addEventListener('click', () => {
+            var _a;
             el.remove();
+            this.tasklist.delete(this.task.id);
+            (_a = this.onDelete) === null || _a === void 0 ? void 0 : _a.call(this, this.task.id);
         });
         return el;
     }
@@ -73,6 +81,8 @@ export class TaskCard {
         const saveChanges = () => {
             this.task.title = titleInput.value.trim() || this.task.title;
             this.task.description = descInput.value.trim() || this.task.description;
+            const updatedData = { id: this.task.id, title: this.task.title, description: this.task.description, status: this.task.status };
+            this.tasklist.update(this.task.id, updatedData);
             const newTitle = document.createElement('h3');
             newTitle.className = 'task-title';
             newTitle.textContent = this.task.title;

@@ -1,11 +1,18 @@
 import { Task } from "../models/Task.js";
+import { TaskList } from "./TaskList.js";
 
 export class TaskCard {
     task: Task
+    tasklist: TaskList
     element: HTMLElement
+    onUpdate?: (task: Task) => void
+    onDelete?: (id: number) => void
 
-    constructor(task: Task) {
+    constructor(task: Task, tasklist: TaskList, onUpdate?: (task: Task) => void, onDelete?: (id: number) => void) {
         this.task = task
+        this.tasklist = tasklist;
+        this.onUpdate = onUpdate
+        this.onDelete = onDelete
         this.element = this.createElement()
     }
 
@@ -66,11 +73,14 @@ export class TaskCard {
 
             modal.classList.remove('show')
             this.makeEditable(titleEl, descEl)
+            this.onUpdate?.(this.task)
         })
 
         const deleteBtn = modal.querySelector('.delete-btn') as HTMLButtonElement
         deleteBtn.addEventListener('click', () => {
             el.remove()
+            this.tasklist.delete(this.task.id)
+            this.onDelete?.(this.task.id)
         })
 
         return el
@@ -94,6 +104,11 @@ export class TaskCard {
             this.task.title = titleInput.value.trim() || this.task.title
             this.task.description = descInput.value.trim() || this.task.description
 
+
+            const updatedData = { id: this.task.id, title: this.task.title, description: this.task.description, status: this.task.status }
+
+            this.tasklist.update(this.task.id, updatedData)
+
             const newTitle = document.createElement('h3')
             newTitle.className = 'task-title'
             newTitle.textContent = this.task.title
@@ -112,6 +127,7 @@ export class TaskCard {
             const target = e.target as Node
 
             if (!titleInput.parentElement?.contains(target)) {
+
                 saveChanges()
             }
         }
