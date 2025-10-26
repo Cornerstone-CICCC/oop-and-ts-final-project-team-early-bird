@@ -11,8 +11,11 @@ export class Modal {
         this._render();
     }
     _render() {
-        var _a, _b;
-        this.close(); // 기존 모달 제거
+        var _a, _b, _c;
+        if (this.modalElem && this.modalElem.parentElement) {
+            this.modalElem.parentElement.removeChild(this.modalElem);
+            this.modalElem = null;
+        }
         let root = document.getElementById(Modal.rootId);
         if (!root) {
             root = document.createElement("div");
@@ -21,10 +24,10 @@ export class Modal {
         }
         const bg = document.createElement("div");
         bg.className = "modal-bg";
-        bg.onclick = () => this.close();
+        bg.addEventListener("click", () => this.close());
         const card = document.createElement("div");
         card.className = "modal-card";
-        card.onclick = (e) => e.stopPropagation();
+        card.addEventListener("click", (e) => e.stopPropagation());
         if ((_a = this.currentOptions) === null || _a === void 0 ? void 0 : _a.title) {
             const h2 = document.createElement("h2");
             h2.textContent = this.currentOptions.title;
@@ -40,26 +43,28 @@ export class Modal {
                 card.appendChild(this.currentOptions.content);
             }
         }
-        const closeBtn = document.createElement("button");
-        closeBtn.className = "modal-close-btn";
-        closeBtn.textContent = "닫기";
-        closeBtn.onclick = () => this.close();
-        card.appendChild(closeBtn);
+        // ✅ Delete 같은 경우엔 기본 close 버튼 안 붙임
+        if (!((_c = this.currentOptions) === null || _c === void 0 ? void 0 : _c.hideDefaultClose)) {
+            const closeBtn = document.createElement("button");
+            closeBtn.className = "modal-close-btn";
+            closeBtn.textContent = "Close";
+            closeBtn.addEventListener("click", () => this.close());
+            card.appendChild(closeBtn);
+        }
         bg.appendChild(card);
         root.appendChild(bg);
         this.modalElem = bg;
     }
     close() {
-        var _a;
+        var _a, _b;
         if (this.modalElem && this.modalElem.parentElement) {
             this.modalElem.parentElement.removeChild(this.modalElem);
             this.modalElem = null;
         }
-        if ((_a = this.currentOptions) === null || _a === void 0 ? void 0 : _a.onClose)
-            this.currentOptions.onClose();
+        (_b = (_a = this.currentOptions) === null || _a === void 0 ? void 0 : _a.onClose) === null || _b === void 0 ? void 0 : _b.call(_a);
         this.currentOptions = null;
     }
 }
-Modal.instance = null; // 싱글턴(한 번만 생성)
+Modal.instance = null;
 Modal.rootId = "modal-root";
 //# sourceMappingURL=Modal.js.map

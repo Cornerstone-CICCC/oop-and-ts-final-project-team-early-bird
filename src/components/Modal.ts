@@ -1,12 +1,13 @@
-// component/Modal.ts
+// src/components/Modal.ts
 export interface ModalOptions {
   title?: string;
   content?: string | HTMLElement;
   onClose?: () => void;
+  hideDefaultClose?: boolean; // ✅ 새 옵션 추가
 }
 
 export class Modal {
-  private static instance: Modal | null = null; // 싱글턴(한 번만 생성)
+  private static instance: Modal | null = null;
   private modalElem: HTMLElement | null = null;
   private currentOptions: ModalOptions | null = null;
   private static rootId = "modal-root";
@@ -22,7 +23,10 @@ export class Modal {
   }
 
   private _render() {
-    this.close(); // 기존 모달 제거
+    if (this.modalElem && this.modalElem.parentElement) {
+      this.modalElem.parentElement.removeChild(this.modalElem);
+      this.modalElem = null;
+    }
 
     let root = document.getElementById(Modal.rootId);
     if (!root) {
@@ -33,11 +37,11 @@ export class Modal {
 
     const bg = document.createElement("div");
     bg.className = "modal-bg";
-    bg.onclick = () => this.close();
+    bg.addEventListener("click", () => this.close());
 
     const card = document.createElement("div");
     card.className = "modal-card";
-    card.onclick = (e) => e.stopPropagation();
+    card.addEventListener("click", (e) => e.stopPropagation());
 
     if (this.currentOptions?.title) {
       const h2 = document.createElement("h2");
@@ -55,11 +59,14 @@ export class Modal {
       }
     }
 
-    const closeBtn = document.createElement("button");
-    closeBtn.className = "modal-close-btn";
-    closeBtn.textContent = "닫기";
-    closeBtn.onclick = () => this.close();
-    card.appendChild(closeBtn);
+    // ✅ Delete 같은 경우엔 기본 close 버튼 안 붙임
+    if (!this.currentOptions?.hideDefaultClose) {
+      const closeBtn = document.createElement("button");
+      closeBtn.className = "modal-close-btn";
+      closeBtn.textContent = "Close";
+      closeBtn.addEventListener("click", () => this.close());
+      card.appendChild(closeBtn);
+    }
 
     bg.appendChild(card);
     root.appendChild(bg);
@@ -71,7 +78,7 @@ export class Modal {
       this.modalElem.parentElement.removeChild(this.modalElem);
       this.modalElem = null;
     }
-    if (this.currentOptions?.onClose) this.currentOptions.onClose();
+    this.currentOptions?.onClose?.();
     this.currentOptions = null;
   }
 }
