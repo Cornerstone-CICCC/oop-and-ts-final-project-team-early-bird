@@ -1,0 +1,77 @@
+@use "sass:meta";
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+// color
+$text-color: #030213;
+$gray-01: #717182;
+$gray-02: #F3F3F5;
+$gray-03: #E5E5E5;
+$white: #fff;
+
+$key01: #884B00;
+$key01-bg: #FEFCE8;
+$key01-line: #FFF086;
+
+$key02: #193BB9;
+$key02-bg: #EFF6FF;
+$key02-line: #BEDBFF;
+
+$key03: #A02D00;
+$key03-bg: #FFF7ED;
+$key03-line: #FFD7A8;
+
+$key04: #6E11B0;
+$key04-bg: #FAF5FF;
+$key04-line: #E9D5FF;
+
+
+// breakpoint
+$sp: 768px;
+$pc: 769px;
+$tab: 600px;
+
+@mixin mq($breakpoint: sp) {
+    @if meta.type-of($breakpoint)==string {
+        @if $breakpoint ==sp {
+            $breakpoint: $sp;
+
+            @media (max-width: $breakpoint) {
+                @content;
+            }
+        }
+
+        @else if $breakpoint ==pc {
+            $breakpoint: $pc;
+
+            @media (min-width: $breakpoint) {
+                @content;
+            }
+        }
+
+        @else if $breakpoint ==tab {
+            $breakpoint: $tab;
+
+            @media (max-width: $breakpoint) {
+                @content;
+            }
+        }
+    }
+}
+
+// font
+$font-roboto: "Roboto", sans-serif;
+$font-montserret: "Montserrat", sans-serif;
+
+html {
+    font-size: 10px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: $font-roboto;
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: $text-color;
+}

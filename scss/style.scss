@@ -1,0 +1,12 @@
+@use './partials/reset';
+@use './partials/mixin';
+@use './partials/header';
+@use './partials/main';
+@use './partials/footer';
+@use './partials/responsive';
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
