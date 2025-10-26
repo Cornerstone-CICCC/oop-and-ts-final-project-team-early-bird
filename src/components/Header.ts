@@ -1,8 +1,7 @@
 // src/components/Header.ts
 // Note: adjust import extension according to your build/tsconfig. 
 // If your app.ts uses .js imports at runtime, consider using './SearchBar.js' here and set moduleResolution accordingly.
-import { SearchBar } from "./SearchBar";
-
+import { SearchBar } from "./SearchBar.js";
 export class Header {
   root: HTMLElement;
   searchBar: SearchBar;

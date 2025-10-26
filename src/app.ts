@@ -1,6 +1,7 @@
 import { KanbanBoard } from "./components/KanbanBoard.js";
 import { Header } from "./components/Header.js";
 import { Footer } from "./components/Footer.js";
+import { Modal } from "./components/Modal.js";
 
 const appRoot = document.getElementById("app") as HTMLElement;
 
@@ -9,6 +10,25 @@ if (appRoot) {
   header.mountBefore(appRoot);
 
   const kanban = new KanbanBoard(appRoot);
+
+  // ------------------------------
+  // Modal 사용 준비
+  const modal = new Modal();
+
+  // 모달 열기 버튼 생성 (임시)
+  const openModalBtn = document.createElement("button");
+  openModalBtn.id = "open-modal-btn";
+  openModalBtn.textContent = "모달 열기";
+  openModalBtn.style.margin = "1rem";
+  openModalBtn.onclick = () => {
+    modal.open({
+      title: "테스트 모달",
+      content: "<p>모달 내용입니다.</p>",
+      onClose: () => console.log("모달 닫힘")
+    });
+  };
+  appRoot.appendChild(openModalBtn);
+  // ------------------------------
 
   function filterKanbanCardsByTitle(query: string) {
     const q = (query || "").trim().toLowerCase();

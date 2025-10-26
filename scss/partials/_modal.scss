@@ -1,0 +1,9 @@
+.modal-bg {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;
+}
+.modal-card {
+  background: #fff; padding: 2em; border-radius: 10px; min-width: 320px; max-width: 90vw; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+.modal-close-btn {
+  margin-top: 1em; float: right;
+}
