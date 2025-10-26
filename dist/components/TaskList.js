@@ -31,6 +31,7 @@ export class TaskList {
             Object.assign(task, updatedTask);
         this.saveTasks();
         this.refresh();
+        // console.log(this.tasks)
     }
     delete(id) {
         this.tasks = this.tasks.filter(task => task.id !== id);
@@ -45,6 +46,7 @@ export class TaskList {
     render() {
         const column = document.createElement("div");
         column.classList.add("kanban-column");
+        column.setAttribute("data-status", this.status);
         const titleAdd = document.createElement('div');
         titleAdd.classList.add('title-add');
         const statusTitle = document.createElement("h2");
@@ -58,11 +60,12 @@ export class TaskList {
             e.preventDefault();
         });
         taskContainer.addEventListener('drop', e => {
-            var _a;
+            var _a, _b;
             e.preventDefault();
             const dragging = document.querySelector('.dragging');
+            const idStr = (_a = e.dataTransfer) === null || _a === void 0 ? void 0 : _a.getData('text/plain');
             taskContainer.appendChild(dragging);
-            const parentStatus = (_a = dragging.closest('.kanban-column')) === null || _a === void 0 ? void 0 : _a.querySelector('h2');
+            const parentStatus = (_b = dragging.closest('.kanban-column')) === null || _b === void 0 ? void 0 : _b.querySelector('h2');
             const draggingStatus = dragging.querySelector('.task-status');
             if (parentStatus.textContent === Status.todo) {
                 draggingStatus.textContent = Status.todo;
@@ -73,9 +76,14 @@ export class TaskList {
             else if (parentStatus.textContent === Status.done) {
                 draggingStatus.textContent = Status.done;
             }
+            console.log('Dropped ID:', idStr);
+            console.log('This List:', this.status);
+            console.log('This List Object:', this);
+            return taskContainer;
         });
         this.tasks.forEach(task => {
             const card = new TaskCard(task, this);
+            // console.log(card.task)
             taskContainer.appendChild(card.render());
         });
         addBtn.addEventListener('click', () => {

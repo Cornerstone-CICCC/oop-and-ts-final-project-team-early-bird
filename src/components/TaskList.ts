@@ -40,6 +40,7 @@ export class TaskList {
             Object.assign(task, updatedTask)
         this.saveTasks()
         this.refresh()
+        // console.log(this.tasks)
     }
 
     delete(id: number) {
@@ -57,6 +58,8 @@ export class TaskList {
     render(): HTMLElement {
         const column = document.createElement("div")
         column.classList.add("kanban-column")
+        column.setAttribute("data-status", this.status) 
+
         const titleAdd = document.createElement('div')
         titleAdd.classList.add('title-add')
 
@@ -75,6 +78,7 @@ export class TaskList {
         taskContainer.addEventListener('drop', e => {
             e.preventDefault()
             const dragging: HTMLElement = document.querySelector('.dragging') as HTMLElement
+            const idStr = e.dataTransfer?.getData('text/plain')
             taskContainer.appendChild(dragging)
 
             const parentStatus : HTMLElement = dragging.closest('.kanban-column')?.querySelector('h2') as HTMLElement
@@ -86,10 +90,17 @@ export class TaskList {
             } else if(parentStatus.textContent === Status.done){
                 draggingStatus.textContent = Status.done
             }
+
+            console.log('Dropped ID:', idStr)
+            console.log('This List:', this.status)
+            console.log('This List Object:', this)
+
+            return taskContainer
         })
 
         this.tasks.forEach(task => {
             const card = new TaskCard(task, this)
+            // console.log(card.task)
             taskContainer.appendChild(card.render())
         })
 

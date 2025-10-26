@@ -1,4 +1,4 @@
-import { Task } from "../models/Task.js";
+import { Task, Status } from "../models/Task.js";
 import { TaskList } from "./TaskList.js";
 
 export class TaskCard {
@@ -34,15 +34,25 @@ export class TaskCard {
             </div>
         `
 
+        // drag-and-drop
         el.addEventListener('dragstart', e => {
             const data = e.target as HTMLElement
+            const idStr = data.querySelector('.task-id')?.textContent?.replace('#', '').trim()
+            if(idStr){
+                e.dataTransfer?.setData('text/plain', idStr)
+                console.log(idStr)
+            }
             data.classList.add('dragging')
         })
-
+        el.addEventListener('dragover', e => {
+            e.preventDefault()
+        })
         el.addEventListener('dragend', e => {
             const data = e.target as HTMLElement
             data.classList.remove('dragging')
+            // console.log(this.task)
         })
+        //
 
         const modal = document.createElement('div')
         modal.classList.add('btn-modal')
@@ -70,9 +80,10 @@ export class TaskCard {
         editBtn.addEventListener('click', () => {
             const titleEl = el.querySelector('.task-title') as HTMLElement
             const descEl = el.querySelector('.task-desc') as HTMLElement
+            const statusEl = el.querySelector('.task-status') as HTMLElement
 
             modal.classList.remove('show')
-            this.makeEditable(titleEl, descEl)
+            this.makeEditable(titleEl, descEl, statusEl)
             this.onUpdate?.(this.task)
         })
 
@@ -86,7 +97,7 @@ export class TaskCard {
         return el
     }
 
-    private makeEditable(titleEl: HTMLElement, descEl: HTMLElement) {
+    private makeEditable(titleEl: HTMLElement, descEl: HTMLElement, statusEl: HTMLElement) {
         const titleInput = document.createElement('input')
         titleInput.type = "text"
         titleInput.value = this.task.title
@@ -97,17 +108,55 @@ export class TaskCard {
         descInput.value = this.task.description
         descInput.classList.add('edit-desc')
 
+        const currentStatus = statusEl.textContent
+        const statusSelect = document.createElement('select')
+        statusSelect.classList.add('edit-status')
+
+        interface StatusData{
+            value: string,
+            selected?: boolean
+        }
+        const statusOptions: StatusData[] = [
+            { value: 'To Do' },
+            { value: 'In Progress' },
+            { value: 'Done' }
+        ]
+        statusOptions.forEach(option => {
+            const optionElement: HTMLOptionElement = document.createElement('option')
+            optionElement.value = option.value
+            optionElement.textContent = option.value
+            statusSelect.appendChild(optionElement)
+        })
+        statusSelect.value = `${currentStatus}`
+
         titleEl.replaceWith(titleInput)
         descEl.replaceWith(descInput)
+        statusEl.replaceWith(statusSelect)
 
         const saveChanges = () => {
             this.task.title = titleInput.value.trim() || this.task.title
             this.task.description = descInput.value.trim() || this.task.description
 
+            const oldStatus = this.task.status
+            this.task.status = statusSelect.value as Status
 
             const updatedData = { id: this.task.id, title: this.task.title, description: this.task.description, status: this.task.status }
 
             this.tasklist.update(this.task.id, updatedData)
+
+            if(oldStatus !== this.task.status){
+                this.tasklist.delete(this.task.id)
+                this.tasklist.render()
+
+                console.log(`${oldStatus} ===> ${this.task.status}`)
+                // console.log(this.tasklist)
+
+                // const newList = this.tasklist.this.task.status)
+                // newList.add(this.task)
+                // newList.render()
+
+                console.log(this.tasklist.status) // todo
+            }
 
             const newTitle = document.createElement('h3')
             newTitle.className = 'task-title'
@@ -117,8 +166,13 @@ export class TaskCard {
             newDesc.className = 'task-desc'
             newDesc.textContent = this.task.description
 
+            const newStatus = document.createElement('p')
+            newStatus.className = 'task-status'
+            newStatus.textContent = this.task.status
+
             titleInput.replaceWith(newTitle)
             descInput.replaceWith(newDesc)
+            statusSelect.replaceWith(newStatus)
 
             document.removeEventListener('click', handleOutsideClick)
         }
@@ -126,9 +180,10 @@ export class TaskCard {
         const handleOutsideClick = (e: MouseEvent) => {
             const target = e.target as Node
 
-            if (!titleInput.parentElement?.contains(target)) {
+            if (!titleInput.parentElement?.contains(target) && !statusSelect.contains(target)) {
 
                 saveChanges()
+                // console.log(this.task) // todo - done (item)
             }
         }
 

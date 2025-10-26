@@ -11,7 +11,6 @@ export class KanbanBoard {
         this.root = root
         this.renderBoard()
     }
-
     renderBoard() {
         const board = document.createElement('div')
         board.classList.add('kanban-board')
@@ -23,5 +22,9 @@ export class KanbanBoard {
         )
 
         this.root.appendChild(board)
+
+        // console.log(this.todoList)
+        // console.log(this.inProgressList)
+        // console.log(this.doneList)
     }
 }
