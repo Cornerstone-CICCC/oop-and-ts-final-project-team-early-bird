@@ -1,0 +1,589 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+div,
+span,
+object,
+iframe,
+figure,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+code,
+em,
+img,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+b,
+u,
+i,
+ol,
+ul,
+li,
+dl,
+dt,
+dd,
+fieldset,
+form,
+label,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+main,
+canvas,
+embed,
+footer,
+header,
+nav,
+section,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  text-size-adjust: none;
+}
+
+footer,
+header,
+nav,
+section,
+main {
+  display: block;
+}
+
+body {
+  line-height: 1;
+}
+
+a {
+  text-decoration: none;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+blockquote,
+q {
+  quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+input {
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+
+html {
+  font-size: 10px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: #030213;
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  padding: 2rem;
+}
+header .logo {
+  font-size: 3.6rem;
+  font-weight: bold;
+}
+header .search-bar {
+  display: flex;
+  position: relative;
+}
+header .search-bar .search-input {
+  border: none;
+  background-color: #F3F3F5;
+  padding: 1.5rem;
+  padding-left: 4rem;
+  border-radius: 0.8rem;
+  min-width: 29rem;
+  outline: none;
+  transition: all 0.5s linear;
+}
+header .search-bar .search-input::placeholder {
+  color: #717182;
+  line-height: 150%;
+}
+header .search-bar .search-input:hover {
+  border-color: #717182;
+}
+header .search-bar .search-input:focus {
+  border-color: #717182;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+}
+header .search-bar .search-input:active {
+  transform: scale(0.98);
+  border-color: #333;
+}
+header .search-bar .search-btn {
+  border: none;
+  background-color: transparent;
+  color: #717182;
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+}
+
+.kanban-board {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1rem;
+}
+.kanban-board .kanban-column {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  padding: 2rem 1.5rem;
+  border-radius: 8px;
+}
+.kanban-board .kanban-column .title-add {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+.kanban-board .kanban-column .title-add h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+.kanban-board .kanban-column .title-add .add-task-btn {
+  font-size: 2.5rem;
+  border: none;
+  background-color: transparent;
+  transition: all 0.5s linear;
+  cursor: pointer;
+}
+.kanban-board .kanban-column .title-add .add-task-btn:hover {
+  transform: scale(1.1);
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+.kanban-board .kanban-column .task-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  height: 100%;
+}
+.kanban-board .kanban-column .task-container .task {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #E5E5E5;
+  background-color: #fff;
+  position: relative;
+  cursor: grab;
+}
+.kanban-board .kanban-column .task-container .task:active {
+  cursor: grabbing;
+}
+.kanban-board .kanban-column .task-container .task .task[draggable=true]:disabled,
+.kanban-board .kanban-column .task-container .task .task.editing {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.kanban-board .kanban-column .task-container .task .btn-modal {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 5rem;
+  right: 1.6rem;
+  background-color: #F3F3F5;
+  border-radius: 8px;
+  padding: 0.8rem;
+  min-width: 100px;
+  border: 1px solid #E5E5E5;
+}
+.kanban-board .kanban-column .task-container .task .btn-modal.show {
+  display: flex;
+}
+.kanban-board .kanban-column .task-container .task .btn-modal .edit-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  border: none;
+  background-color: transparent;
+  transition: all 0.5s linear;
+}
+.kanban-board .kanban-column .task-container .task .btn-modal .edit-btn:hover {
+  background-color: black;
+  color: #fff;
+  border-radius: 4px;
+  transform: scale(1.1);
+  cursor: pointer;
+}
+.kanban-board .kanban-column .task-container .task .btn-modal .delete-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  border: none;
+  background-color: transparent;
+  color: red;
+  transition: all 0.5s linear;
+}
+.kanban-board .kanban-column .task-container .task .btn-modal .delete-btn:hover {
+  background-color: red;
+  color: #fff;
+  border-radius: 4px;
+  transform: scale(1.1);
+  cursor: pointer;
+}
+.kanban-board .kanban-column .task-container .task .card-header {
+  display: flex;
+  justify-content: space-between;
+}
+.kanban-board .kanban-column .task-container .task .card-header .id-status {
+  display: flex;
+  gap: 1rem;
+}
+.kanban-board .kanban-column .task-container .task .card-header .id-status .task-id {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: 1px solid #E5E5E5;
+  color: #717182;
+}
+.kanban-board .kanban-column .task-container .task .card-header .id-status .task-status {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.kanban-board .kanban-column .task-container .task .card-header span {
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  transition: all 0.3s linear;
+}
+.kanban-board .kanban-column .task-container .task .card-header span:hover {
+  cursor: pointer;
+  transform: scale(1.05);
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+.kanban-board .kanban-column .task-container .task .title-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.kanban-board .kanban-column .task-container .task .title-desc h3 {
+  font-size: 2rem;
+  font-weight: 600;
+}
+.kanban-board .kanban-column .task-container .task .title-desc .edit-title {
+  font-size: 1.5rem;
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #E5E5E5;
+  outline: none;
+  padding: 0.5rem;
+  transition: all 0.3s linear;
+}
+.kanban-board .kanban-column .task-container .task .title-desc .edit-title:focus {
+  border: 1px solid #717182;
+}
+.kanban-board .kanban-column .task-container .task .title-desc p {
+  color: #717182;
+  font-family: "Montserrat", sans-serif;
+  text-wrap: wrap;
+}
+.kanban-board .kanban-column .task-container .task .title-desc .edit-desc {
+  border-radius: 5px;
+  border: 1px solid #E5E5E5;
+  outline: none;
+  resize: none;
+  padding: 0.5rem;
+  transition: all 0.3s linear;
+}
+.kanban-board .kanban-column .task-container .task .title-desc .edit-desc:focus {
+  border: 1px solid #717182;
+}
+.kanban-board .kanban-column:nth-child(1) {
+  background-color: #FEFCE8;
+  border: 1px dashed #FFF086;
+}
+.kanban-board .kanban-column:nth-child(1) .task-status {
+  border: 1px solid #FFF086;
+  color: #884B00;
+  background-color: #FEFCE8;
+}
+.kanban-board .kanban-column:nth-child(2) {
+  background-color: #EFF6FF;
+  border: 1px dashed #BEDBFF;
+}
+.kanban-board .kanban-column:nth-child(2) .task-status {
+  border: 1px solid #BEDBFF;
+  color: #193BB9;
+  background-color: #EFF6FF;
+}
+.kanban-board .kanban-column:nth-child(3) {
+  background-color: #FAF5FF;
+  border: 1px dashed #E9D5FF;
+}
+.kanban-board .kanban-column:nth-child(3) .task-status {
+  border: 1px solid #E9D5FF;
+  color: #6E11B0;
+  background-color: #FAF5FF;
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  padding: 3rem;
+  color: #717182;
+}
+
+.task-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+}
+.task-modal-overlay .task-modal {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 300px;
+  max-width: 650px;
+  width: 100%;
+}
+.task-modal-overlay .task-modal .id-status {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 0;
+  border-bottom: 1px solid #E5E5E5;
+}
+.task-modal-overlay .task-modal .id-status h2 {
+  font-size: 2rem;
+  font-weight: 600;
+}
+.task-modal-overlay .task-modal .id-status .modal-edit-status {
+  padding: 0.5rem;
+  cursor: pointer;
+  font-family: "Montserrat", sans-serif;
+}
+.task-modal-overlay .task-modal .close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  border: none;
+  cursor: pointer;
+  font-size: 2rem;
+  background-color: transparent;
+}
+.task-modal-overlay .task-modal .title-input {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.task-modal-overlay .task-modal .title-input label {
+  font-weight: 500;
+}
+.task-modal-overlay .task-modal .title-input .modal-edit-title {
+  border-radius: 4px;
+  padding: 1rem;
+  border: 1px solid #E5E5E5;
+  font-family: "Montserrat", sans-serif;
+  outline: none;
+  transition: all 0.3s linear;
+}
+.task-modal-overlay .task-modal .title-input .modal-edit-title:focus {
+  border: 1px solid #717182;
+}
+.task-modal-overlay .task-modal .desc-input {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.task-modal-overlay .task-modal .desc-input label {
+  font-weight: 500;
+}
+.task-modal-overlay .task-modal .desc-input .modal-edit-desc {
+  border-radius: 4px;
+  padding: 1rem;
+  border: 1px solid #E5E5E5;
+  font-family: "Montserrat", sans-serif;
+  outline: none;
+  resize: none;
+  transition: all 0.3s linear;
+}
+.task-modal-overlay .task-modal .desc-input .modal-edit-desc:focus {
+  border: 1px solid #717182;
+}
+.task-modal-overlay .task-modal .save-delete {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+}
+.task-modal-overlay .task-modal .save-delete button {
+  border: none;
+  background-color: black;
+  color: #fff;
+  padding: 0.7rem 1rem;
+  border-radius: 4px;
+  transition: all 0.5s linear;
+}
+.task-modal-overlay .task-modal .save-delete button:hover {
+  border: 1px solid black;
+  color: black;
+  background-color: #fff;
+  box-shadow: 0px 0px 5px 0px #000000;
+}
+.task-modal-overlay .task-modal .save-delete .modal-delete-btn {
+  background-color: red;
+}
+.task-modal-overlay .task-modal .save-delete .modal-delete-btn:hover {
+  border: 1px solid red;
+  color: red;
+  background-color: #fff;
+  box-shadow: 0px 0px 5px 0px red;
+}
+
+.confirmation-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1001;
+}
+.confirmation-overlay .confirmation-modal {
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+.confirmation-overlay .confirmation-modal .confirmation-message {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  text-align: center;
+}
+.confirmation-overlay .confirmation-modal .confirmation-btns {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+.confirmation-overlay .confirmation-modal .confirmation-btns button {
+  border: none;
+  background-color: black;
+  color: #fff;
+  padding: 0.7rem 1rem;
+  border-radius: 4px;
+  transition: all 0.5s linear;
+}
+.confirmation-overlay .confirmation-modal .confirmation-btns button:hover {
+  border: 1px solid black;
+  color: black;
+  background-color: #fff;
+  box-shadow: 0px 0px 5px 0px #000000;
+}
+.confirmation-overlay .confirmation-modal .confirmation-btns .confirm-btn {
+  background-color: red;
+}
+.confirmation-overlay .confirmation-modal .confirmation-btns .confirm-btn:hover {
+  border: 1px solid red;
+  color: red;
+  background-color: #fff;
+  box-shadow: 0px 0px 5px 0px red;
+}
+
+@media screen and (min-width: 769px) {
+  .header {
+    display: flex;
+    justify-content: center;
+  }
+  .header header {
+    max-width: 980px;
+    width: 100%;
+  }
+  .header header .search-bar .search-input {
+    min-width: 35rem;
+  }
+  .kanban-board {
+    flex-direction: row;
+  }
+  .kanban-board .kanban-column {
+    min-width: 270px;
+    max-width: 300px;
+    width: 100%;
+    min-height: 80vh;
+  }
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/*# sourceMappingURL=style.css.map */
