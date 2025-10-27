@@ -16,6 +16,11 @@ export class TaskCard extends Component {
         el.setAttribute('draggable', 'true')
 
         el.addEventListener('dragstart', e => {
+            if (TaskCard.editingCard) {
+                e.preventDefault()
+                return;
+            }
+
             e.dataTransfer?.setData('text/plain', JSON.stringify(task))
             el.classList.add('dragging')
         })
@@ -91,6 +96,9 @@ export class TaskCard extends Component {
     }
 
     private makeEditable(task: Task, el: HTMLElement) {
+        el.classList.add('editing')
+        el.setAttribute('draggable', 'false')
+
         const statusEl = el.querySelector('.task-status') as HTMLElement
         const titleEl = el.querySelector('.task-title') as HTMLElement
         const descEl = el.querySelector('.task-desc') as HTMLElement
@@ -147,6 +155,9 @@ export class TaskCard extends Component {
             descInput.replaceWith(newDesc)
 
             document.removeEventListener('click', handleOutsideClick)
+
+            el.classList.remove('editing')
+            el.setAttribute('draggable', 'true')
 
             TaskCard.saveChangesCallback = null
             TaskCard.editingCard = null

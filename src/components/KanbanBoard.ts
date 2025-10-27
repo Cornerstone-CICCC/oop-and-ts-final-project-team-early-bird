@@ -20,8 +20,10 @@ export class KanbanBoard extends Component {
             const column = new TaskList({
                 status,
                 taskContext: this.props.taskContext,
-                onTaskDrop: (task, newStatus) => { }
+                searchQuery: this.props.searchQuery,
+                onTaskDrop: (task, newStatus) => this.refresh()
             }).render()
+
             board.appendChild(column)
         })
 

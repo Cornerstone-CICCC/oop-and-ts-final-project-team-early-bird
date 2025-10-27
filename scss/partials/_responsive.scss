@@ -1,6 +1,23 @@
 @use './mixin';
 
 @media screen and (min-width: 769px) {
+    .header {
+        display: flex;
+        justify-content: center;
+
+        header {
+            max-width: 980px;
+            width: 100%;
+
+            .search-bar {
+
+                .search-input {
+                    min-width: 35rem;
+                }
+            }
+        }
+    }
+
     .kanban-board {
         flex-direction: row;
 

@@ -50,9 +50,21 @@ export class TaskList extends Component {
             taskContainer.classList.remove('drag-over')
         })
 
-        const tasks = taskContext.getByStatus(status)
+        let tasks = taskContext.getByStatus(status)
+
+        if (this.props.searchQuery && this.props.searchQuery.trim() !== '') {
+            const query = this.props.searchQuery.toLowerCase()
+            tasks = tasks.filter((task: Task) => {
+                return (
+                    task.title.toLowerCase().includes(query) || task.description.toLowerCase().includes(query)
+                )
+            })
+        }
+
         tasks.forEach((task: Task) => {
-            const card = new TaskCard({ task, taskContext }).render()
+            const card = new TaskCard({
+                task, taskContext
+            }).render()
             taskContainer.appendChild(card)
         })
 

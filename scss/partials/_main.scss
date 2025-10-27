@@ -54,6 +54,12 @@
                 position: relative;
                 cursor: move;
 
+                .task[draggable="true"]:disabled,
+                .task.editing {
+                    cursor: not-allowed;
+                    pointer-events: none;
+                }
+
                 .btn-modal {
                     display: none;
                     flex-direction: column;

@@ -1,0 +1,8 @@
+@use './mixin';
+
+footer {
+    display: flex;
+    justify-content: center;
+    padding: 3rem;
+    color: mixin.$gray-01;
+}

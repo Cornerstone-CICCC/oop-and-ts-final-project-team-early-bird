@@ -1,0 +1,1 @@
+{"version":3,"file":"Footer.js","sourceRoot":"","sources":["../../src/components/Footer.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,wBAAwB,CAAC;AAEnD,MAAM,OAAO,MAAO,SAAQ,SAAS;IACjC,MAAM;QACF,MAAM,MAAM,GAAG,QAAQ,CAAC,aAAa,CAAC,QAAQ,CAAC,CAAA;QAC/C,MAAM,CAAC,SAAS,GAAG,0DAA0D,CAAA;QAE7E,OAAO,MAAM,CAAA;IACjB,CAAC;CACJ"}

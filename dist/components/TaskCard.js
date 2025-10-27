@@ -8,6 +8,10 @@ export class TaskCard extends Component {
         el.setAttribute('draggable', 'true');
         el.addEventListener('dragstart', e => {
             var _a;
+            if (TaskCard.editingCard) {
+                e.preventDefault();
+                return;
+            }
             (_a = e.dataTransfer) === null || _a === void 0 ? void 0 : _a.setData('text/plain', JSON.stringify(task));
             el.classList.add('dragging');
         });
@@ -71,6 +75,8 @@ export class TaskCard extends Component {
         return el;
     }
     makeEditable(task, el) {
+        el.classList.add('editing');
+        el.setAttribute('draggable', 'false');
         const statusEl = el.querySelector('.task-status');
         const titleEl = el.querySelector('.task-title');
         const descEl = el.querySelector('.task-desc');
@@ -117,6 +123,8 @@ export class TaskCard extends Component {
             titleInput.replaceWith(newTitle);
             descInput.replaceWith(newDesc);
             document.removeEventListener('click', handleOutsideClick);
+            el.classList.remove('editing');
+            el.setAttribute('draggable', 'true');
             TaskCard.saveChangesCallback = null;
             TaskCard.editingCard = null;
             TaskCard.editingTask = null;
