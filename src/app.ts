@@ -1,4 +1,4 @@
-// src/app.ts
+// ✅ src/app.ts (팀원 요청사항 + 중복 Close 제거 최종판)
 import { Header } from "./components/Header.js";
 import { KanbanBoard } from "./components/KanbanBoard.js";
 import { ModalController } from "./components/ModalController.js";
@@ -60,31 +60,38 @@ document.addEventListener("DOMContentLoaded", () => {
     const wrap = document.createElement("div");
     wrap.className = "srch-wrap";
 
+    // 결과 없음
     if (!columnResults.length) {
       wrap.innerHTML = `
         <div class="srch-header">
-          <h3>Search results for "<span>${escapeHtml(query)}</span>"</h3>
+          <h3 class="srch-title-large">Search results for "<span>${escapeHtml(query)}</span>"</h3>
           <button class="srch-close" aria-label="Close results">Close</button>
         </div>
         <div class="srch-empty">
           <p>No results for "<strong>${escapeHtml(query)}</strong>".</p>
         </div>`;
       const modal = new Modal();
-      modal.open({ title: "Search", content: wrap });
+      // 🔸 "Search" 제목 제거 + 기본 Close 버튼 숨김
+      modal.open({ title: "", content: wrap, hideDefaultClose: true });
       wrap.querySelector<HTMLButtonElement>(".srch-close")?.addEventListener("click", () => modal.close());
       return;
     }
 
+    // 결과 있음
     wrap.innerHTML = `
       <div class="srch-header">
-        <h3>Search results for "<span>${escapeHtml(query)}</span>"</h3>
+        <h3 class="srch-title-large">Search results for "<span>${escapeHtml(query)}</span>"</h3>
         <button class="srch-close" aria-label="Close results">Close</button>
       </div>
-      ${columnResults.map(col => `
+      ${columnResults
+        .map(
+          (col) => `
         <div class="srch-section">
           <h4 class="srch-col-title">${escapeHtml(col.title)}</h4>
           <ul class="srch-list">
-            ${col.items.map(it => `
+            ${col.items
+              .map(
+                (it) => `
               <li class="srch-item" data-id="${escapeHtml(it.id)}">
                 <div class="srch-line">
                   <span class="srch-id">${escapeHtml(it.id)}</span>
@@ -93,15 +100,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="srch-title">${escapeHtml(it.title)}</div>
                 <div class="srch-desc">${escapeHtml(it.desc)}</div>
                 <button class="srch-jump" type="button">Go to card</button>
-              </li>
-            `).join("")}
+              </li>`
+              )
+              .join("")}
           </ul>
-        </div>
-      `).join("")}
+        </div>`
+        )
+        .join("")}
     `;
 
     const modal = new Modal();
-    modal.open({ title: "Search", content: wrap });
+    // 🔸 "Search" 제목 제거 + 기본 Close 버튼 숨김 (닫기 버튼 하나만)
+    modal.open({ title: "", content: wrap, hideDefaultClose: true });
 
     wrap.querySelector<HTMLButtonElement>(".srch-close")?.addEventListener("click", () => modal.close());
 
@@ -125,20 +135,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 🔔 제출 이벤트에서만 모달 오픈
+  // 제출 이벤트 → 모달 오픈
   header.root.addEventListener("header:search-submit", (e: any) => {
     const { query } = e.detail as { query: string; results: string[] };
     openSearchResultsModal(query);
   });
-
-  // (선택) 프리뷰 이벤트: 필요하면 추후 사용 가능
-  // header.root.addEventListener("header:search-preview", (e: any) => {
-  //   const { query } = e.detail;
-  //   console.log("preview:", query);
-  // });
 });
 
-// 안전한 HTML 출력용
+// HTML escape helper
 function escapeHtml(s: string) {
   return (s || "")
     .replace(/&/g, "&amp;")

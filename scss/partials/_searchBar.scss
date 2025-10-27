@@ -1,19 +1,24 @@
-/* ✅ src/styles/search_bar.scss — 최종 병합본 (덮어쓰기) */
+/* ✅ src/styles/search_bar.scss — 아이콘 위치 통일 완벽판 */
 
 /* ─────────────────────────────
    Search Bar
 ───────────────────────────── */
 .search_bar {
+  /* 버튼 위치/크기 변수 */
+  --sb-btn-size: 28px;
+  --sb-btn-right: 0.9rem;
+
   position: relative;
   display: flex;
   align-items: center;
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
-  gap: 0.5rem;
 
   @media (min-width: 768px) {
     max-width: 640px;
+    --sb-btn-size: 30px;
+    --sb-btn-right: 0.9rem; /* PC 기준 spacing */
   }
 }
 
@@ -23,119 +28,132 @@
   background-color: #f3f3f5;
   color: #717182;
   border-radius: 0.5rem;
-  padding: 0.5rem 2.5rem 0.5rem 0.75rem; /* 아이콘 공간 */
+  /* 아이콘 영역 확보 */
+  padding: 0.5rem calc(var(--sb-btn-size) + var(--sb-btn-right) + 0.9rem) 0.5rem 0.75rem;
   border: none;
   font-size: 1rem;
   outline: none;
   transition: box-shadow 0.2s ease;
 
-  &:focus { box-shadow: 0 0 0 2px #c4c4d6; }
-  &::placeholder { color: #a0a0b0; }
+  &:focus {
+    box-shadow: 0 0 0 2px #c4c4d6;
+  }
+
+  &::placeholder {
+    color: #a0a0b0;
+  }
 }
 
 .search_bar__btn {
   position: absolute;
-  right: 0.75rem;
+  right: var(--sb-btn-right);
   top: 50%;
   transform: translateY(-50%);
   border: none;
   background: transparent;
   cursor: pointer;
-  width: 32px;
-  height: 32px;
-  display: grid;
-  place-items: center;
-  z-index: 1; /* 입력 위 */
+  width: var(--sb-btn-size);
+  height: var(--sb-btn-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
   color: #717182;
-  font-size: 1rem;
   transition: color 0.2s ease;
 
-  &:hover { color: #2d2d39; }
-  i { font-size: 1.1rem; }
+  &:hover {
+    color: #2d2d39;
+  }
+
+  i {
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  /* 📱 작은 화면에서도 정중앙 유지 */
+  @media (max-width: 767px) {
+    right: 0.8rem;
+    width: 26px;
+    height: 26px;
+    i {
+      font-size: 0.95rem;
+    }
+  }
 }
 
 /* ─────────────────────────────
-   Search Results (모달 기반)
-   - Modal.ts의 .modal-card 안에 그려질 때 모달스러운 룩으로 보이도록
-   - 패널로 쓸 경우(#search-results)도 보기 좋게 폴백 제공
+   Search Results (Modal 기반)
 ───────────────────────────── */
-
-/* (폴백) 보드 아래 패널로 쓸 때 레이아웃 */
 #search-results {
   margin: 16px auto;
   max-width: 880px;
 }
 
-/* 기본 결과 래퍼 (패널 모드 기본 룩) */
 .srch-wrap {
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 6px 24px rgba(0,0,0,.08);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
   padding: 16px;
   border: 1px solid #eee;
 }
 
-/* ✅ 모달 카드 내부에 들어가면, 모달 카드의 여백/배경을 사용하도록 리셋 */
 .modal-card .srch-wrap {
   background: transparent;
   border: 0;
   box-shadow: none;
-  padding: 0;                 /* 모달 카드의 padding 사용 */
+  padding: 0;
   max-height: calc(82vh - 32px);
   overflow: auto;
 }
 
-/* 헤더: 모달 느낌으로 상단 고정 + 구분선 */
 .srch-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: .75rem;
+  gap: 0.75rem;
   padding: 0 0 10px;
   margin: 0 0 12px;
   border-bottom: 1px solid #eee;
-
-  /* 모달 내부에서 스크롤 시 헤더 고정 */
   position: sticky;
   top: -1px;
   background: #fff;
   z-index: 5;
 }
 
-.srch-header h3 {
+/* 큰 타이틀 */
+.srch-title-large {
   margin: 0;
-  font-size: 1.1rem;
-
-  span { font-weight: 700; }
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #111;
 }
 
-/* 버튼 류: 모달 기본 버튼 톤과 맞춤 */
 .srch-close,
 .srch-jump {
   border: none;
   border-radius: 8px;
-  padding: .45rem .7rem;
+  padding: 0.45rem 0.7rem;
   cursor: pointer;
-  font-size: .95rem;
+  font-size: 0.95rem;
 }
 
-/* 닫기 버튼: modal-close-btn 톤 */
 .srch-close {
   background: #f3f3f5;
   color: #333;
 }
 
-/* 이동 버튼: save-btn 톤 */
+/* Go to card 버튼 색상 */
 .srch-jump {
-  background: #2b77ff;
-  color: #fff;
+  background: #030213 !important;
+  color: #fff !important;
 }
 
-/* 섹션/리스트 */
-.srch-section + .srch-section { margin-top: 14px; }
+.srch-section + .srch-section {
+  margin-top: 14px;
+}
 
 .srch-col-title {
-  margin: .25rem 0 .5rem;
+  margin: 0.25rem 0 0.5rem;
   font-size: 1rem;
   color: #444;
 }
@@ -161,11 +179,13 @@
   display: flex;
   gap: 8px;
   align-items: center;
-  font-size: .9rem;
+  font-size: 0.9rem;
   color: #666;
 }
 
-.srch-id { font-weight: 700; }
+.srch-id {
+  font-weight: 700;
+}
 
 .srch-status {
   background: #eef3ff;
@@ -174,20 +194,25 @@
   border-radius: 999px;
 }
 
-.srch-title { font-weight: 700; color: #222; }
-.srch-desc  { color: #555; font-size: .95rem; }
+.srch-title {
+  font-weight: 700;
+  color: #222;
+}
+
+.srch-desc {
+  color: #555;
+  font-size: 0.95rem;
+}
 
 .srch-item .srch-jump {
   justify-self: end;
 }
 
-/* 결과 없을 때 */
 .srch-empty {
   padding: 8px 2px 2px;
   color: #555;
 }
 
-/* 점프 시 원카드 하이라이트 */
 .kb-pulse {
   animation: kbPulse 1.2s ease;
   outline: 2px solid #2b77ff;
@@ -195,10 +220,17 @@
 }
 
 @keyframes kbPulse {
-  0%   { box-shadow: 0 0 0 0 rgba(43,119,255,.5); }
-  70%  { box-shadow: 0 0 0 10px rgba(43,119,255,0); }
-  100% { box-shadow: 0 0 0 0 rgba(43,119,255,0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(43, 119, 255, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(43, 119, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(43, 119, 255, 0);
+  }
 }
 
-/* 참고: 칸반 보드 내 숨김 클래스 */
-.kanban-board .kb-hidden { display: none !important; }
+.kanban-board .kb-hidden {
+  display: none !important;
+}
