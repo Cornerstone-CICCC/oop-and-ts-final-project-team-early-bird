@@ -108,10 +108,11 @@
 
                     .id-status {
                         display: flex;
-                        gap: 1rem;
+                        gap: .8rem;
+                        font-size: 1.4rem;
 
                         .task-id {
-                            padding: .5rem 1rem;
+                            padding: .5rem .7rem;
                             border-radius: 4px;
                             border: 1px solid mixin.$gray-03;
                             color: mixin.$gray-01;
@@ -158,7 +159,7 @@
                     p {
                         color: mixin.$gray-01;
                         font-family: mixin.$font-montserret;
-                        text-wrap: wrap;
+                        word-break: break-word;
                     }
 
                     .edit-desc {

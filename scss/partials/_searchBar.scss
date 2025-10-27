@@ -17,7 +17,7 @@
 
   @media (min-width: 768px) {
     max-width: 640px;
-    --sb-btn-size: 30px;
+    --sb-btn-size: 40px;
     --sb-btn-right: 0.9rem; /* PC 기준 spacing */
   }
 }
@@ -46,7 +46,7 @@
 
 .search_bar__btn {
   position: absolute;
-  right: var(--sb-btn-right);
+  right: 0;
   top: 50%;
   transform: translateY(-50%);
   border: none;
@@ -66,17 +66,16 @@
   }
 
   i {
-    font-size: 1rem;
+    font-size: 1.8rem;
     line-height: 1;
   }
 
   /* 📱 작은 화면에서도 정중앙 유지 */
   @media (max-width: 767px) {
-    right: 0.8rem;
     width: 26px;
     height: 26px;
     i {
-      font-size: 0.95rem;
+      font-size: 1.3rem;
     }
   }
 }

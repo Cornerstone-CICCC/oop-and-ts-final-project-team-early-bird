@@ -42,6 +42,33 @@ export class TaskList {
             this.element.innerHTML = '';
         this.render();
     }
+    static updateTaskInStorage(id, newStatus, newTitle, newDesc) {
+        const buckets = [Status.todo, Status.inProgress, Status.done];
+        for (const status of buckets) {
+            const arr = JSON.parse(localStorage.getItem(`task_${status}`) || "[]");
+            const idx = arr.findIndex(t => t.id === id);
+            if (idx !== -1) {
+                const task = arr[idx];
+                if (status !== newStatus) {
+                    arr.splice(idx, 1);
+                    localStorage.setItem(`task_${status}`, JSON.stringify(arr));
+                    const newArr = JSON.parse(localStorage.getItem(`task_${newStatus}`) || "[]");
+                    newArr.push({
+                        id: id,
+                        title: newTitle || task.title,
+                        description: newDesc || task.description,
+                        status: newStatus
+                    });
+                    localStorage.setItem(`task_${newStatus}`, JSON.stringify(newArr));
+                }
+                else {
+                    arr[idx] = Object.assign(Object.assign({}, task), { title: newTitle || task.title, description: newDesc || task.description });
+                    localStorage.setItem(`task_${status}`, JSON.stringify(arr));
+                }
+                break;
+            }
+        }
+    }
     render() {
         const column = document.createElement("div");
         column.classList.add("kanban-column");
@@ -58,21 +85,18 @@ export class TaskList {
             e.preventDefault();
         });
         taskContainer.addEventListener('drop', e => {
-            var _a;
+            var _a, _b, _c, _d;
             e.preventDefault();
             const dragging = document.querySelector('.dragging');
+            if (!dragging)
+                return;
             taskContainer.appendChild(dragging);
-            const parentStatus = (_a = dragging.closest('.kanban-column')) === null || _a === void 0 ? void 0 : _a.querySelector('h2');
-            const draggingStatus = dragging.querySelector('.task-status');
-            if (parentStatus.textContent === Status.todo) {
-                draggingStatus.textContent = Status.todo;
-            }
-            else if (parentStatus.textContent === Status.inProgress) {
-                draggingStatus.textContent = Status.inProgress;
-            }
-            else if (parentStatus.textContent === Status.done) {
-                draggingStatus.textContent = Status.done;
-            }
+            const idNum = parseInt(((_b = (_a = dragging.querySelector(".task-id")) === null || _a === void 0 ? void 0 : _a.textContent) === null || _b === void 0 ? void 0 : _b.replace("#", "")) || "-1");
+            const newStatus = ((_d = (_c = dragging.closest(".kanban-column")) === null || _c === void 0 ? void 0 : _c.querySelector("h2")) === null || _d === void 0 ? void 0 : _d.textContent) || Status.todo;
+            TaskList.updateTaskInStorage(idNum, newStatus);
+            const statusEl = dragging.querySelector(".task-status");
+            if (statusEl)
+                statusEl.textContent = newStatus;
         });
         this.tasks.forEach(task => {
             const card = new TaskCard(task, this);
