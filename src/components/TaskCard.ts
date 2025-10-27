@@ -100,27 +100,31 @@ export class TaskCard {
         titleEl.replaceWith(titleInput)
         descEl.replaceWith(descInput)
 
+        //
+        const statusSelect = document.createElement('select')
+        statusSelect.innerHTML = `
+            <option value="${this.tasklist.status}">${this.tasklist.status}</option>
+            <option value="To Do">To Do</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Done">Done</option>
+        `
+        descInput.after(statusSelect)
+        //
+
         const saveChanges = () => {
-            this.task.title = titleInput.value.trim() || this.task.title
-            this.task.description = descInput.value.trim() || this.task.description
+            const newTitle = titleInput.value.trim() || this.task.title
+            const newDesc = descInput.value.trim() || this.task.description
+            const newStatus = statusSelect.value as any
 
+            TaskList.updateTaskInStorage(this.task.id, newStatus, newTitle, newDesc)
 
-            const updatedData = { id: this.task.id, title: this.task.title, description: this.task.description, status: this.task.status }
+            this.task.title = newTitle
+            this.task.description = newDesc
+            this.task.status = newStatus
 
-            this.tasklist.update(this.task.id, updatedData)
-
-            const newTitle = document.createElement('h3')
-            newTitle.className = 'task-title'
-            newTitle.textContent = this.task.title
-
-            const newDesc = document.createElement('p')
-            newDesc.className = 'task-desc'
-            newDesc.textContent = this.task.description
-
-            titleInput.replaceWith(newTitle)
-            descInput.replaceWith(newDesc)
-
-            document.removeEventListener('click', handleOutsideClick)
+            titleInput.replaceWith(this.createTextElement('h3', 'task-title', newTitle))
+            descInput.replaceWith(this.createTextElement('p', 'task-desc', newDesc))
+            statusSelect.remove()
         }
 
         const handleOutsideClick = (e: MouseEvent) => {
@@ -131,22 +135,14 @@ export class TaskCard {
                 saveChanges()
             }
         }
+        setTimeout(() => document.addEventListener('click', handleOutsideClick), 0)
+    }
 
-        titleInput.addEventListener('keypress', e => {
-            if (e.key === "Enter") {
-                e.preventDefault()
-                descInput.focus()
-            }
-        })
-
-        descInput.addEventListener('focus', () => {
-            titleInput.blur()
-        })
-
-        setTimeout(() => {
-            document.addEventListener('click', handleOutsideClick)
-        }, 0)
-
+    private createTextElement(tag: string, cls: string, text: string) {
+        const el = document.createElement(tag)
+        el.className = cls
+        el.textContent = text
+        return el
     }
 
     render(): HTMLElement {

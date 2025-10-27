@@ -54,6 +54,39 @@ export class TaskList {
         this.render()
     }
 
+    static updateTaskInStorage(id: number, newStatus: Status, newTitle?: string, newDesc?: string){
+        const buckets: Status[] = [Status.todo, Status.inProgress, Status.done]
+
+        for(const status of buckets){
+            const arr: Task[] = JSON.parse(localStorage.getItem(`task_${status}`) || "[]")
+            const idx = arr.findIndex(t => t.id === id)
+            if(idx !== -1){
+                const task = arr[idx]
+                if(status !== newStatus){
+                    arr.splice(idx, 1)
+                    localStorage.setItem(`task_${status}`, JSON.stringify(arr))
+
+                    const newArr: Task[] = JSON.parse(localStorage.getItem(`task_${newStatus}`) || "[]")
+                    newArr.push({
+                        id: id,
+                        title: newTitle || task.title,
+                        description: newDesc || task.description,
+                        status: newStatus
+                    })
+                    localStorage.setItem(`task_${newStatus}`, JSON.stringify(newArr))
+                } else {
+                    arr[idx] = {
+                        ...task,
+                        title: newTitle || task.title,
+                        description: newDesc || task.description
+                    }
+                    localStorage.setItem(`task_${status}`, JSON.stringify(arr))
+                }
+                break
+            }
+        }
+    }
+
     render(): HTMLElement {
         const column = document.createElement("div")
         column.classList.add("kanban-column")
@@ -75,17 +108,17 @@ export class TaskList {
         taskContainer.addEventListener('drop', e => {
             e.preventDefault()
             const dragging: HTMLElement = document.querySelector('.dragging') as HTMLElement
+            if (!dragging) return
+
             taskContainer.appendChild(dragging)
 
-            const parentStatus : HTMLElement = dragging.closest('.kanban-column')?.querySelector('h2') as HTMLElement
-            const draggingStatus : HTMLElement = dragging.querySelector('.task-status') as HTMLElement
-            if(parentStatus.textContent === Status.todo){
-                draggingStatus.textContent = Status.todo
-            } else if(parentStatus.textContent === Status.inProgress){
-                draggingStatus.textContent = Status.inProgress
-            } else if(parentStatus.textContent === Status.done){
-                draggingStatus.textContent = Status.done
-            }
+            const idNum = parseInt((dragging.querySelector(".task-id") as HTMLElement)?.textContent?.replace("#","") || "-1")
+            const newStatus = dragging.closest(".kanban-column")?.querySelector("h2")?.textContent as Status || Status.todo
+
+            TaskList.updateTaskInStorage(idNum, newStatus)
+
+            const statusEl = dragging.querySelector(".task-status") as HTMLElement | null
+            if (statusEl) statusEl.textContent = newStatus
         })
 
         this.tasks.forEach(task => {
