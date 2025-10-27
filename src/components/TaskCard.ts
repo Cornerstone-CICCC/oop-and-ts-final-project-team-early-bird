@@ -1,12 +1,15 @@
 import { Component } from "../common/Component.js";
 import { Task } from "../model/Task.js";
 import { Status } from "../model/Status.js";
+import { TaskModal } from "./TaskModal.js";
+import { ConfirmationModal } from "./ConfirmationModal.js";
 
 export class TaskCard extends Component {
     static openModal: HTMLElement | null = null
     static editingCard: HTMLElement | null = null
     static editingTask: Task | null = null
     static saveChangesCallback: (() => void) | null = null
+    static openModalInstance: HTMLElement | null = null
 
     render() {
         const task: Task = this.props.task
@@ -16,7 +19,7 @@ export class TaskCard extends Component {
         el.setAttribute('draggable', 'true')
 
         el.addEventListener('dragstart', e => {
-            if (TaskCard.editingCard) {
+            if (TaskCard.editingCard || document.querySelector('.task-modal-overlay')) {
                 e.preventDefault()
                 return;
             }
@@ -27,6 +30,18 @@ export class TaskCard extends Component {
 
         el.addEventListener('dragend', () => {
             el.classList.remove('dragging')
+        })
+
+        el.addEventListener('dblclick', e => {
+            const target = e.target as HTMLElement
+            if (
+                target.closest('.option-btn') ||
+                target.closest('.btn-modal') ||
+                target.closest('button') ||
+                TaskCard.editingCard
+            ) return
+
+            this.openTaskModal(task)
         })
 
         el.innerHTML = `
@@ -81,8 +96,16 @@ export class TaskCard extends Component {
         // Delete
         const deleteBtn = modal.querySelector('.delete-btn') as HTMLButtonElement
         deleteBtn.addEventListener('click', () => {
-            el.remove()
-            this.props.taskContext.delete(task.id)
+            new ConfirmationModal({
+                message: "Are you sure you want to delete this task?",
+                onConfirm: () => {
+                    el.remove()
+                    this.props.taskContext.delete(task.id)
+                },
+                onCancel: () => {
+                    return
+                }
+            }).render()
         })
 
         // Edit
@@ -176,5 +199,23 @@ export class TaskCard extends Component {
         TaskCard.editingCard = el
         TaskCard.editingTask = task
         TaskCard.saveChangesCallback = saveChanges
+    }
+
+    private openTaskModal(task: Task) {
+        if (TaskCard.openModalInstance) {
+            TaskCard.openModalInstance.remove()
+            TaskCard.openModalInstance = null
+        }
+
+        const taskModal = new TaskModal({
+            task,
+            taskContext: this.props.taskContext,
+            onClose: () => {
+                TaskCard.openModalInstance = null
+                this.props.taskContext.notifyListeners()
+            }
+        }).render()
+
+        TaskCard.openModalInstance = taskModal
     }
 }

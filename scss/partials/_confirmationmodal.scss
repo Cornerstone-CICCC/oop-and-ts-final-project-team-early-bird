@@ -1,0 +1,62 @@
+@use './mixin';
+
+.confirmation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(0, 0, 0, 0.6);
+    z-index: 1001;
+
+    .confirmation-modal {
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        padding: 1.5rem;
+        border-radius: 8px;
+
+        .confirmation-message {
+            font-family: mixin.$font-montserret;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .confirmation-btns {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+
+            button {
+                border: none;
+                background-color: black;
+                color: #fff;
+                padding: .7rem 1rem;
+                border-radius: 4px;
+                transition: all .5s linear;
+
+                &:hover {
+                    border: 1px solid black;
+                    color: black;
+                    background-color: #fff;
+                    box-shadow: 0px 0px 5px 0px #000000;
+                }
+            }
+
+            .confirm-btn {
+                background-color: red;
+
+                &:hover {
+                    border: 1px solid red;
+                    color: red;
+                    background-color: #fff;
+                    box-shadow: 0px 0px 5px 0px red;
+                }
+            }
+        }
+    }
+}

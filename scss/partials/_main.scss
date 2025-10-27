@@ -29,10 +29,11 @@
                 border: none;
                 background-color: transparent;
                 transition: all .5s linear;
+                cursor: pointer;
 
                 &:hover {
                     transform: scale(1.1);
-                    cursor: pointer;
+                    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
                 }
             }
         }
@@ -52,7 +53,11 @@
                 border: 1px solid mixin.$gray-03;
                 background-color: mixin.$white;
                 position: relative;
-                cursor: move;
+                cursor: grab;
+
+                &:active {
+                    cursor: grabbing;
+                }
 
                 .task[draggable="true"]:disabled,
                 .task.editing {
@@ -86,6 +91,9 @@
                         transition: all .5s linear;
 
                         &:hover {
+                            background-color: black;
+                            color: #fff;
+                            border-radius: 4px;
                             transform: scale(1.1);
                             cursor: pointer;
                         }
@@ -102,6 +110,9 @@
                         transition: all .5s linear;
 
                         &:hover {
+                            background-color: red;
+                            color: #fff;
+                            border-radius: 4px;
                             transform: scale(1.1);
                             cursor: pointer;
                         }
@@ -136,9 +147,12 @@
                         justify-content: center;
                         align-items: center;
                         width: 20px;
+                        transition: all .3s linear;
 
                         &:hover {
                             cursor: pointer;
+                            transform: scale(1.05);
+                            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
                         }
                     }
                 }
@@ -157,8 +171,14 @@
                         font-size: 1.5rem;
                         padding: .5rem;
                         border-radius: 5px;
-                        border: 1px solid mixin.$gray-01;
+                        border: 1px solid mixin.$gray-03;
                         outline: none;
+                        padding: .5rem;
+                        transition: all .3s linear;
+
+                        &:focus {
+                            border: 1px solid mixin.$gray-01;
+                        }
                     }
 
                     p {
@@ -169,9 +189,15 @@
 
                     .edit-desc {
                         border-radius: 5px;
-                        border: 1px solid mixin.$gray-01;
+                        border: 1px solid mixin.$gray-03;
                         outline: none;
                         resize: none;
+                        padding: .5rem;
+                        transition: all .3s linear;
+
+                        &:focus {
+                            border: 1px solid mixin.$gray-01;
+                        }
                     }
                 }
             }

@@ -1,0 +1,136 @@
+@use './mixin';
+
+.task-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(0, 0, 0, 0.6);
+    z-index: 1000;
+
+    .task-modal {
+        background-color: #fff;
+        padding: 1.5rem;
+        border-radius: 8px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        min-width: 300px;
+        max-width: 650px;
+        width: 100%;
+
+        .id-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 2rem 0;
+            border-bottom: 1px solid mixin.$gray-03;
+
+            h2 {
+                font-size: 2rem;
+                font-weight: 600;
+            }
+
+            .modal-edit-status {
+                padding: .5rem;
+                cursor: pointer;
+                font-family: mixin.$font-montserret;
+            }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            border: none;
+            cursor: pointer;
+            font-size: 2rem;
+            background-color: transparent;
+        }
+
+        .title-input {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+
+            label {
+                font-weight: 500;
+            }
+
+            .modal-edit-title {
+                border-radius: 4px;
+                padding: 1rem;
+                border: 1px solid mixin.$gray-03;
+                font-family: mixin.$font-montserret;
+                outline: none;
+                transition: all .3s linear;
+
+                &:focus {
+                    border: 1px solid mixin.$gray-01;
+                }
+            }
+        }
+
+        .desc-input {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+
+            label {
+                font-weight: 500;
+            }
+
+            .modal-edit-desc {
+                border-radius: 4px;
+                padding: 1rem;
+                border: 1px solid mixin.$gray-03;
+                font-family: mixin.$font-montserret;
+                outline: none;
+                resize: none;
+                transition: all .3s linear;
+
+                &:focus {
+                    border: 1px solid mixin.$gray-01;
+                }
+            }
+        }
+
+        .save-delete {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+
+            button {
+                border: none;
+                background-color: black;
+                color: #fff;
+                padding: .7rem 1rem;
+                border-radius: 4px;
+                transition: all .5s linear;
+
+                &:hover {
+                    border: 1px solid black;
+                    color: black;
+                    background-color: #fff;
+                    box-shadow: 0px 0px 5px 0px #000000;
+                }
+            }
+
+            .modal-delete-btn {
+                background-color: red;
+
+                &:hover {
+                    border: 1px solid red;
+                    color: red;
+                    background-color: #fff;
+                    box-shadow: 0px 0px 5px 0px red;
+                }
+            }
+        }
+    }
+}
