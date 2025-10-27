@@ -3,6 +3,7 @@ import { Modal } from "./Modal.js";
 export class ModalController {
     constructor() {
         this.interceptPaused = false;
+        // Kanban의 실제 라벨(칼럼 제목/배지/스토리지 키와 동일)
         this.STATUS = {
             TODO: "To Do",
             INPROG: "In Progress",
@@ -63,18 +64,36 @@ export class ModalController {
         if (container)
             container.appendChild(taskEl);
     }
+    // ✅ 열려있는 옵션 팝업(.btn-modal.show) 전부 닫기
+    closeAllOptionMenus(except) {
+        const opens = document.querySelectorAll(".btn-modal.show");
+        opens.forEach((m) => {
+            if (except && m.contains(except))
+                return;
+            m.classList.remove("show");
+        });
+    }
     // ---------- main ----------
     init() {
         document.addEventListener("click", (e) => {
             var _a, _b, _c, _d, _e, _f;
             const target = e.target;
+            // 옵션 버튼/옵션 메뉴가 아닌 영역을 클릭하면 열려있는 옵션 팝업 전부 닫기
+            const inOptionMenu = target.closest(".btn-modal");
+            const onOptionBtn = target.closest(".option-btn");
+            if (!inOptionMenu && !onOptionBtn)
+                this.closeAllOptionMenus();
+            // 옵션 버튼 클릭은 팀 기본 토글 핸들러가 동작하도록 패스
+            if (onOptionBtn)
+                return;
             if (this.interceptPaused)
                 return;
-            // 1) Add Task(+)
+            // 1) Add Task(+) 버튼 → 추가 모달
             const addBtn = target.closest(".add-task-btn");
             if (addBtn) {
                 e.preventDefault();
                 e.stopPropagation();
+                this.closeAllOptionMenus();
                 const column = addBtn.closest(".kanban-column");
                 const taskContainer = column === null || column === void 0 ? void 0 : column.querySelector(".task-container");
                 const statusLabel = (((_b = (_a = column === null || column === void 0 ? void 0 : column.querySelector("h2")) === null || _a === void 0 ? void 0 : _a.textContent) === null || _b === void 0 ? void 0 : _b.trim()) || this.STATUS.TODO);
@@ -97,11 +116,11 @@ export class ModalController {
                     const title = ((_a = wrap.querySelector("#new-title")) === null || _a === void 0 ? void 0 : _a.value.trim()) || "New Task";
                     const desc = ((_b = wrap.querySelector("#new-desc")) === null || _b === void 0 ? void 0 : _b.value.trim()) ||
                         "Add Description";
-                    // 팀 기본 add 핸들러 실행을 위해 잠시 인터셉트 해제
+                    // 팀 기본 add 핸들러가 실행되게 잠깐 인터셉트 해제 → 새로운 카드 DOM 생성
                     this.interceptPaused = true;
                     addBtn.click();
                     this.interceptPaused = false;
-                    // 마지막 카드 덮어쓰기 + storage 동기화
+                    // 마지막 카드에 값 덮어쓰기 + storage 동기화
                     setTimeout(() => {
                         if (!taskContainer) {
                             modal.close();
@@ -133,11 +152,12 @@ export class ModalController {
                 modal.open({ title: "Add New Task", content: wrap });
                 return;
             }
-            // 2) Delete 버튼
+            // 2) Delete 버튼 → 확인 모달
             const delBtn = target.closest(".delete-btn");
             if (delBtn) {
                 e.preventDefault();
                 e.stopPropagation();
+                this.closeAllOptionMenus();
                 const taskEl = this.getTaskEl(delBtn);
                 if (!taskEl)
                     return;
@@ -154,7 +174,9 @@ export class ModalController {
           `;
                 (_e = wrap.querySelector("#cancel-del")) === null || _e === void 0 ? void 0 : _e.addEventListener("click", () => modal.close());
                 (_f = wrap.querySelector("#confirm-del")) === null || _f === void 0 ? void 0 : _f.addEventListener("click", () => {
+                    // DOM
                     taskEl.remove();
+                    // storage
                     const hit = this.findById(idNum);
                     if (hit) {
                         const arr = this.load(hit.status).filter((t) => t.id !== idNum);
@@ -169,11 +191,12 @@ export class ModalController {
                 modal.open({ title: "Delete Task", content: wrap, hideDefaultClose: true });
                 return;
             }
-            // 3) Edit 버튼
+            // 3) Edit 버튼 → 편집 모달
             const editBtn = target.closest(".edit-btn");
             if (editBtn) {
                 e.preventDefault();
                 e.stopPropagation();
+                this.closeAllOptionMenus();
                 const taskEl = this.getTaskEl(editBtn);
                 if (taskEl)
                     this.openEditModal(taskEl);
@@ -184,10 +207,12 @@ export class ModalController {
             if (card && !target.closest(".option-btn") && !target.closest("button")) {
                 e.preventDefault();
                 e.stopPropagation();
+                this.closeAllOptionMenus();
                 this.openEditModal(card);
                 return;
             }
-        }, true);
+        }, true // 캡처 단계
+        );
     }
     // ---------- 편집 모달 ----------
     openEditModal(taskEl) {
@@ -199,7 +224,7 @@ export class ModalController {
         let descEl = taskEl.querySelector(".task-desc");
         if (!titleEl || !descEl) {
             const box = taskEl.querySelector(".title-desc");
-            // ✅ 혼용 금지 해결: 괄호로 묶어 우선순위 명시
+            // (?? 와 || 혼용 금지 → 괄호로 우선순위 명시)
             titleEl = (titleEl !== null && titleEl !== void 0 ? titleEl : box === null || box === void 0 ? void 0 : box.querySelector("h3")) || null;
             descEl = (descEl !== null && descEl !== void 0 ? descEl : box === null || box === void 0 ? void 0 : box.querySelector("p")) || null;
         }

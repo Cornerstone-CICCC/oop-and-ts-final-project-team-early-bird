@@ -1,27 +1,148 @@
-import { KanbanBoard } from "./components/KanbanBoard.js";
+// src/app.ts
 import { Header } from "./components/Header.js";
-import { Footer } from "./components/Footer.js";
+import { KanbanBoard } from "./components/KanbanBoard.js";
 import { ModalController } from "./components/ModalController.js";
+import { Modal } from "./components/Modal.js";
 
-// ⚡ DOM이 완전히 준비된 후 실행되도록
-window.addEventListener("DOMContentLoaded", () => {
-  const appRoot = document.getElementById("app") as HTMLElement;
+type MatchItem = {
+  id: string;
+  title: string;
+  desc: string;
+  status: string;
+  el: HTMLElement;
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  const header = new Header();
+  header.mountAtTop();
+
+  let appRoot = document.getElementById("app");
   if (!appRoot) {
-    console.error("Root element not found!");
-    return;
+    appRoot = document.createElement("div");
+    appRoot.id = "app";
+    document.body.appendChild(appRoot);
   }
 
-  const header = new Header();
-  header.mountBefore(appRoot);
+  const board = new KanbanBoard(appRoot as HTMLElement);
+  const modalCtl = new ModalController();
 
-  const kanban = new KanbanBoard(appRoot);
+  const boardRoot = document.querySelector(".kanban-board") as HTMLElement | null;
 
-  // ⚡ TaskCard들이 실제로 렌더된 후 ModalController 초기화
-  // setTimeout은 이벤트 루프 한 번 넘기기 위한 안전장치 (렌더 타이밍 맞춤)
-  setTimeout(() => {
-    new ModalController();
-  }, 0);
+  // 🔎 검색 결과 모달
+  function openSearchResultsModal(query: string) {
+    if (!boardRoot) return;
+    const term = query.trim().toLowerCase();
+    if (!term) return;
 
-  const footer = new Footer();
-  footer.mountAfter(appRoot);
+    const columns = Array.from(boardRoot.querySelectorAll(".kanban-column")) as HTMLElement[];
+    const columnResults: Array<{ title: string; items: MatchItem[] }> = [];
+
+    columns.forEach((col) => {
+      const colTitle = (col.querySelector("h2")?.textContent || "").trim();
+      const container = col.querySelector(".task-container") as HTMLElement | null;
+      if (!container) return;
+
+      const tasks = Array.from(container.querySelectorAll(".task")) as HTMLElement[];
+      const matches: MatchItem[] = [];
+
+      tasks.forEach((card) => {
+        const title = (card.querySelector(".task-title")?.textContent || "").trim();
+        const desc = (card.querySelector(".task-desc")?.textContent || "").trim();
+        const id = (card.querySelector(".task-id")?.textContent || "").trim();
+        const status = (card.querySelector(".task-status")?.textContent || "").trim();
+        const hay = `${title} ${desc}`.toLowerCase();
+        if (hay.includes(term)) matches.push({ id, title, desc, status, el: card });
+      });
+
+      if (matches.length) columnResults.push({ title: colTitle, items: matches });
+    });
+
+    const wrap = document.createElement("div");
+    wrap.className = "srch-wrap";
+
+    if (!columnResults.length) {
+      wrap.innerHTML = `
+        <div class="srch-header">
+          <h3>Search results for "<span>${escapeHtml(query)}</span>"</h3>
+          <button class="srch-close" aria-label="Close results">Close</button>
+        </div>
+        <div class="srch-empty">
+          <p>No results for "<strong>${escapeHtml(query)}</strong>".</p>
+        </div>`;
+      const modal = new Modal();
+      modal.open({ title: "Search", content: wrap });
+      wrap.querySelector<HTMLButtonElement>(".srch-close")?.addEventListener("click", () => modal.close());
+      return;
+    }
+
+    wrap.innerHTML = `
+      <div class="srch-header">
+        <h3>Search results for "<span>${escapeHtml(query)}</span>"</h3>
+        <button class="srch-close" aria-label="Close results">Close</button>
+      </div>
+      ${columnResults.map(col => `
+        <div class="srch-section">
+          <h4 class="srch-col-title">${escapeHtml(col.title)}</h4>
+          <ul class="srch-list">
+            ${col.items.map(it => `
+              <li class="srch-item" data-id="${escapeHtml(it.id)}">
+                <div class="srch-line">
+                  <span class="srch-id">${escapeHtml(it.id)}</span>
+                  <span class="srch-status">${escapeHtml(it.status)}</span>
+                </div>
+                <div class="srch-title">${escapeHtml(it.title)}</div>
+                <div class="srch-desc">${escapeHtml(it.desc)}</div>
+                <button class="srch-jump" type="button">Go to card</button>
+              </li>
+            `).join("")}
+          </ul>
+        </div>
+      `).join("")}
+    `;
+
+    const modal = new Modal();
+    modal.open({ title: "Search", content: wrap });
+
+    wrap.querySelector<HTMLButtonElement>(".srch-close")?.addEventListener("click", () => modal.close());
+
+    wrap.querySelectorAll<HTMLButtonElement>(".srch-jump").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const li = (e.currentTarget as HTMLElement).closest(".srch-item") as HTMLElement;
+        const idText = li?.dataset.id || "";
+        if (!idText) return;
+
+        const allCards = Array.from(boardRoot.querySelectorAll(".task")) as HTMLElement[];
+        const target = allCards.find(
+          (c) => (c.querySelector(".task-id")?.textContent || "").trim() === idText
+        );
+        if (target) {
+          modal.close();
+          target.scrollIntoView({ behavior: "smooth", block: "center" });
+          target.classList.add("kb-pulse");
+          setTimeout(() => target.classList.remove("kb-pulse"), 1200);
+        }
+      });
+    });
+  }
+
+  // 🔔 제출 이벤트에서만 모달 오픈
+  header.root.addEventListener("header:search-submit", (e: any) => {
+    const { query } = e.detail as { query: string; results: string[] };
+    openSearchResultsModal(query);
+  });
+
+  // (선택) 프리뷰 이벤트: 필요하면 추후 사용 가능
+  // header.root.addEventListener("header:search-preview", (e: any) => {
+  //   const { query } = e.detail;
+  //   console.log("preview:", query);
+  // });
 });
+
+// 안전한 HTML 출력용
+function escapeHtml(s: string) {
+  return (s || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
