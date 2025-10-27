@@ -1,0 +1,209 @@
+@use './mixin';
+
+.kanban-board {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1rem;
+
+    .kanban-column {
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+        padding: 2rem 1.5rem;
+        border-radius: 8px;
+
+        .title-add {
+            display: flex;
+            justify-content: space-between;
+            gap: 2rem;
+
+            h2 {
+                font-size: 2.5rem;
+                font-weight: 700;
+            }
+
+            .add-task-btn {
+                font-size: 2.5rem;
+                border: none;
+                background-color: transparent;
+                transition: all .5s linear;
+
+                &:hover {
+                    transform: scale(1.1);
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .task-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            height: 100%;
+
+            .task {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+                padding: 1rem;
+                border-radius: 8px;
+                border: 1px solid mixin.$gray-03;
+                background-color: mixin.$white;
+                position: relative;
+                cursor: move;
+
+                .btn-modal {
+                    display: none;
+                    flex-direction: column;
+                    position: absolute;
+                    top: 5rem;
+                    right: 1.6rem;
+                    background-color: mixin.$gray-02;
+                    border-radius: 8px;
+                    padding: .8rem;
+                    min-width: 100px;
+                    border: 1px solid mixin.$gray-03;
+
+                    &.show {
+                        display: flex;
+                    }
+
+                    .edit-btn {
+                        display: flex;
+                        align-items: center;
+                        gap: 1rem;
+                        padding: .5rem;
+                        border: none;
+                        background-color: transparent;
+                        transition: all .5s linear;
+
+                        &:hover {
+                            transform: scale(1.1);
+                            cursor: pointer;
+                        }
+                    }
+
+                    .delete-btn {
+                        display: flex;
+                        align-items: center;
+                        gap: 1rem;
+                        padding: .5rem;
+                        border: none;
+                        background-color: transparent;
+                        color: red;
+                        transition: all .5s linear;
+
+                        &:hover {
+                            transform: scale(1.1);
+                            cursor: pointer;
+                        }
+                    }
+                }
+
+                .card-header {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .id-status {
+                        display: flex;
+                        gap: .8rem;
+                        font-size: 1.4rem;
+
+                        .task-id {
+                            padding: .5rem .7rem;
+                            border-radius: 4px;
+                            border: 1px solid mixin.$gray-03;
+                            color: mixin.$gray-01;
+                        }
+
+                        .task-status {
+                            padding: .5rem 1rem;
+                            border-radius: 4px;
+                            font-weight: 600;
+                        }
+                    }
+
+                    span {
+                        font-size: 2rem;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 20px;
+
+                        &:hover {
+                            cursor: pointer;
+                        }
+                    }
+                }
+
+                .title-desc {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1rem;
+
+                    h3 {
+                        font-size: 2rem;
+                        font-weight: 600;
+                    }
+
+                    .edit-title {
+                        font-size: 1.5rem;
+                        padding: .5rem;
+                        border-radius: 5px;
+                        border: 1px solid mixin.$gray-01;
+                        outline: none;
+                    }
+
+                    p {
+                        color: mixin.$gray-01;
+                        font-family: mixin.$font-montserret;
+                        word-break: break-word;
+                    }
+
+                    .edit-desc {
+                        border-radius: 5px;
+                        border: 1px solid mixin.$gray-01;
+                        outline: none;
+                        resize: none;
+                    }
+                }
+            }
+        }
+
+    }
+
+    .kanban-column:nth-child(1) {
+        background-color: mixin.$key01-bg;
+        border: 1px dashed mixin.$key01-line;
+
+        .task-status {
+            border: 1px solid mixin.$key01-line;
+            color: mixin.$key01;
+            background-color: mixin.$key01-bg;
+        }
+    }
+
+    .kanban-column:nth-child(2) {
+        background-color: mixin.$key02-bg;
+        border: 1px dashed mixin.$key02-line;
+
+        .task-status {
+            border: 1px solid mixin.$key02-line;
+            color: mixin.$key02;
+            background-color: mixin.$key02-bg;
+        }
+    }
+
+    .kanban-column:nth-child(3) {
+        background-color: mixin.$key04-bg;
+        border: 1px dashed mixin.$key04-line;
+
+        .task-status {
+            border: 1px solid mixin.$key04-line;
+            color: mixin.$key04;
+            background-color: mixin.$key04-bg;
+        }
+    }
+}
